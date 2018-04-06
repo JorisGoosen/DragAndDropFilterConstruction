@@ -16,14 +16,26 @@ ListView {
 		ListElement { name: "Operator";	element: "operatorComp";	operator: "%"}
 	}
 
-	delegate: Loader
+	delegate: MouseArea
 	{
-		sourceComponent: element == "numberComp" ? numberComp : operatorComp
-		property var listValue: value
-		property var listOperator: operator
+		width:  ListView.view.width
+		height: elementLoader.height
+
+		property var chosenComponent: element == "numberComp" ? numberComp : operatorComp
+
+		Loader
+		{
+			id: elementLoader
+			sourceComponent: parent.chosenComponent
+			property var listValue: value
+			property var listOperator: operator
+			anchors.horizontalCenter: parent.horizontalCenter
+		}
+
+		onDoubleClicked: { chosenComponent.createObject(getIntoTheFlow, { "value": value, "operator": operator, "canBeDragged": true}) }
 	}
 
-	Component { id: numberComp;		NumberDrag		{ value: listValue} }
-	Component { id: operatorComp;	OperatorDrag	{ operator: listOperator} }
+	Component { id: numberComp;		NumberDrag		{ canBeDragged: false; value: listValue} }
+	Component { id: operatorComp;	OperatorDrag	{ canBeDragged: false; operator: listOperator} }
 
 }

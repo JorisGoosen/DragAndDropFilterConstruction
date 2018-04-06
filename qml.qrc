@@ -4,12 +4,12 @@
         <file>FilterConstructor.qml</file>
         <file>Number.qml</file>
         <file>Operator.qml</file>
-        <file>DragTile.qml</file>
         <file>DropSpot.qml</file>
         <file>VariablesList.qml</file>
         <file>ElementView.qml</file>
         <file>NumberDrag.qml</file>
         <file>DragGeneric.qml</file>
         <file>OperatorDrag.qml</file>
+        <file>ElementView_copy.qml</file>
     </qresource>
 </RCC>
