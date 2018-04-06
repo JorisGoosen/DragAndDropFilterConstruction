@@ -14,22 +14,22 @@ Item {
 		anchors.right: elements.left
 		anchors.bottom: parent.bottom
 
-		Number	{}
+		NumberDrag	{}
 
-		OperatorDragTile {}
+		OperatorDrag {}
 
-		OperatorDragTile { operator: "-" }
-		OperatorDragTile { operator: "*" }
-		OperatorDragTile { operator: "%" }
-		OperatorDragTile { operator: "/" }
-		OperatorDragTile { operator: "~" }
+		OperatorDrag { operator: "-" }
+		OperatorDrag { operator: "*" }
+		OperatorDrag { operator: "%" }
+		OperatorDrag { operator: "/" }
+		OperatorDrag { operator: "~" }
 
-		Number { value: 1 }
-		Number { value: 2 }
-		Number { value: 3 }
-		Number { value: 4 }
-		Number { value: 5 }
-		Number { value: 6 }
+		NumberDrag { value: 1 }
+		NumberDrag { value: 2 }
+		NumberDrag { value: 3 }
+		NumberDrag { value: 4 }
+		NumberDrag { value: 5 }
+		NumberDrag { value: 6 }
 
 
 	}

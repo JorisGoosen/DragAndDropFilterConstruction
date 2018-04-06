@@ -23,7 +23,7 @@ ListView {
 		property var listOperator: operator
 	}
 
-	Component { id: numberComp;		Number		{ value: listValue} }
-	Component { id: operatorComp;	Operator	{ operator: listOperator} }
+	Component { id: numberComp;		NumberDrag		{ value: listValue} }
+	Component { id: operatorComp;	OperatorDrag	{ operator: listOperator} }
 
 }

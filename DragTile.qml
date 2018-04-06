@@ -15,7 +15,7 @@ MouseArea {
 
 	onReleased:
 	{
-		if(oldParent.objectName === "DropTile" && dragme.Drag.target != oldParent )
+		if(oldParent.objectName === "DropSpot" && dragme.Drag.target != oldParent )
 		{
 			oldParent.width = oldParent.implicitWidth
 			oldParent.containsSomething = false
@@ -35,7 +35,7 @@ MouseArea {
 		mouseArea.x = 0
 		mouseArea.y = 0
 
-		if(parent.objectName === "DropTile")
+		if(parent.objectName === "DropSpot")
 		{
 			parent.width = Qt.binding(function() { return dragme.width })
 			parent.containsSomething = true
@@ -64,8 +64,6 @@ MouseArea {
 
 			anchors.verticalCenter: parent.verticalCenter
 			anchors.horizontalCenter: parent.horizontalCenter
-
-
 		}
 
 		states: [
