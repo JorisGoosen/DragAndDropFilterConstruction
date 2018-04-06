@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>FilterConstructor.qml</file>
+        <file>Number.qml</file>
+        <file>Operator.qml</file>
+        <file>DragTile.qml</file>
+        <file>DropTile.qml</file>
+        <file>VariablesList.qml</file>
+        <file>ElementView.qml</file>
+        <file>NumberDragTile.qml</file>
+    </qresource>
+</RCC>
