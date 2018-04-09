@@ -7,6 +7,7 @@ Item
 	height:	filterConstructor.blockDim
 	width:	nummer.contentWidth
 
+
 	Text
 	{
 		id: nummer
@@ -15,7 +16,7 @@ Item
 		anchors.horizontalCenter:	parent.horizontalCenter
 		anchors.verticalCenter:		parent.verticalCenter
 
-		font.pixelSize: parent.height
+		font.pixelSize: filterConstructor.fontPixelSize
 	}
 
 	function shouldDrag(mouse)

@@ -10,6 +10,34 @@
         <file>NumberDrag.qml</file>
         <file>DragGeneric.qml</file>
         <file>OperatorDrag.qml</file>
-        <file>ElementView_copy.qml</file>
+        <file>NumberOperatorList.qml</file>
+        <file>Function.qml</file>
+        <file>FunctionDrag.qml</file>
+        <file>NumberOperatorList_copy.qml</file>
+        <file>ColumnsSelector.qml</file>
+        <file>JASPColumn.qml</file>
+        <file>ColumnDrag.qml</file>
+        <file>icons/variable-nominal-inactive.svg</file>
+        <file>icons/variable-nominal-text.svg</file>
+        <file>icons/variable-nominal.svg</file>
+        <file>icons/variable-ordinal-inactive.svg</file>
+        <file>icons/variable-ordinal.svg</file>
+        <file>icons/variable-scale-inactive.svg</file>
+        <file>icons/variable-scale.svg</file>
+        <file>icons/recycle.svg</file>
+        <file>DropTrash.qml</file>
+        <file>icons/and.png</file>
+        <file>icons/equal.png</file>
+        <file>icons/greaterThan.png</file>
+        <file>icons/greaterThanEqual.png</file>
+        <file>icons/lessThan.png</file>
+        <file>icons/lessThanEqual.png</file>
+        <file>icons/negative.png</file>
+        <file>icons/notEqual.png</file>
+        <file>icons/or.png</file>
+        <file>icons/sigma.png</file>
+        <file>icons/sum.png</file>
+        <file>icons/variance.png</file>
     </qresource>
+    <qresource prefix="/icons"/>
 </RCC>
