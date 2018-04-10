@@ -4,7 +4,12 @@ import QtQuick 2.0
 MouseArea {
 	id: mouseArea
 
+	z: 2
+
 	property bool canBeDragged: true
+
+	//acceptedButtons: canBeDragged ? Qt.LeftButton : Qt.NoButton
+
 
 	property real dragHotSpotX: width / 2
 	property real dragHotSpotY: height / 2
@@ -15,6 +20,7 @@ MouseArea {
 
 	objectName: "DragGeneric"
 	property var shownChild: null
+
 	property alias dragChild: dragMe
 
 	width: shownChild == null ? implicitWidth : shownChild.width
@@ -43,24 +49,28 @@ MouseArea {
 		}
 	}
 
-	onReleased:
-	{
-		if(dragMe.Drag.target != null && dragMe.Drag.target.objectName === "DropTrash")
-		{
-			destroy();
-			return;
-		}
+	onReleased: this.releaseHere(dragMe.Drag.target)
 
-		if(oldParent.objectName === "DropSpot" && dragMe.Drag.target != oldParent )
+	function releaseHere(dropTarget)
+	{
+
+		if(oldParent !== null && oldParent.objectName === "DropSpot" && dropTarget !== oldParent )
 		{
 			oldParent.width = oldParent.implicitWidth
+			oldParent.height = oldParent.implicitHeight
 			oldParent.containsItem = null
 		}
 
+		if(dropTarget !== null && dropTarget.objectName === "DropTrash")
+		{
+			destroy();
+			dropTarget.somethingHovers = false
+			return;
+		}
 
-		parent = dragMe.Drag.target !== null ? dragMe.Drag.target : scriptColumn
+		parent = dropTarget !== null ? dropTarget : scriptColumn
 
-		if(parent == oldParent ) { parent = null; parent = oldParent }
+		if(parent === oldParent ) { parent = null; parent = oldParent }
 
 		dragMe.x = 0
 		dragMe.y = 0
@@ -70,8 +80,11 @@ MouseArea {
 		if(parent.objectName === "DropSpot")
 		{
 			parent.width = Qt.binding(function() { return dragMe.width })
+			parent.height = Qt.binding(function() { return dragMe.height })
 			parent.containsItem = this
 		}
+
+		scriptColumn.focus = true
 	}
 
 
@@ -90,15 +103,14 @@ MouseArea {
 
 		states: [
 			State {
-			when: mouseArea.drag.active
-			ParentChange { target: dragMe; parent: filterConstructor }
-			AnchorChanges { target: dragMe; anchors.verticalCenter: undefined; anchors.horizontalCenter: undefined }
-		},
-
-		State {
-			when: !mouseArea.drag.active
-			AnchorChanges { target: dragMe; anchors.verticalCenter: mouseArea.verticalCenter; anchors.horizontalCenter: mouseArea.horizontalCenter }
-		}
+				when: mouseArea.drag.active
+				ParentChange	{ target: dragMe; parent: filterConstructor }
+				AnchorChanges	{ target: dragMe; anchors.verticalCenter: undefined; anchors.horizontalCenter: undefined }
+			},
+			State {
+				when: !mouseArea.drag.active
+				AnchorChanges	{ target: dragMe; anchors.verticalCenter: mouseArea.verticalCenter; anchors.horizontalCenter: mouseArea.horizontalCenter }
+			}
 		]
 
 	}

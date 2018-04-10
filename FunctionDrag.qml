@@ -4,14 +4,12 @@ DragGeneric {
 	shownChild: showMe
 
 	property string functionName: "sum"
-	property var parameterNames: []
-	property var parameterDropKeys: []
+	property var parameterNames: functionName != "!" ? ["X"] : []
+	property var parameterDropKeys: ["???"]
 
-	property alias acceptsDrops: showMe.acceptsDrops
+	property bool acceptsDrops: true
 
 	function returnR() { return showMe.returnR(); }
-
-
 
 	Function
 	{
@@ -22,5 +20,8 @@ DragGeneric {
 
 		x: parent.dragX
 		y: parent.dragY
+
+		isNested: parent.nested
+		acceptsDrops: parent.acceptsDrops
 	}
 }

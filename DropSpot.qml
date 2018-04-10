@@ -8,13 +8,14 @@ DropArea {
 	property var dropKeys: [ "number", "boolean", "string", "variable" ]
 	property alias dropProxy: dragTarget
 
-	width:  acceptsDrops ? 64 : 8;
+	width:  dropText.contentWidth
 	height: 64
 	keys: dropKeys
 	property real originalWidth: defaultText.length * filterConstructor.blockDim * 0.4
 	property bool acceptsDrops: true
-	property string defaultText: "..."
+	property string defaultText: acceptsDrops ? "..." : shouldShowX ? "X" : ""
 	property bool droppedShouldBeNested: false
+	property bool shouldShowX: false
 
 	onEntered:
 	{
@@ -51,15 +52,18 @@ DropArea {
 
 	property var containsItem: null
 
-	Text
+	Item
 	{
 		id: dropText
-		text: dragTarget.defaultText
-		font.pixelSize: filterConstructor.fontPixelSize
+
+		property string text: dragTarget.defaultText
+
 		anchors.top: parent.top
 		anchors.bottom: parent.bottom
 		anchors.horizontalCenter: parent.horizontalCenter
-		visible: parent.acceptsDrops & dragTarget.containsItem === null
+
+		width: dropTextStatic.visible ? dropTextStatic.width : dropTextInput.width
+		//height: dropTextStatic.visible ? dropTextStatic.height : dropTextInput.height
 
 		states: [
 			State {
@@ -77,7 +81,62 @@ DropArea {
 				}
 			}
 		]
+
+		//visible: (parent.acceptsDrops || shouldShowX) && dragTarget.containsItem === null
+		//readOnly: dragTarget.containsItem !== null || !parent.acceptsDrops
+
+		Text
+		{
+			id: dropTextStatic
+
+			text: dragTarget.containsItem === null ? dropText.text : ""
+			font.pixelSize: filterConstructor.fontPixelSize
+			anchors.top: parent.top
+
+			visible: !dropTextInput.visible
+		}
+
+		TextInput
+		{
+			id: dropTextInput
+
+			text: dropText.text
+			font.pixelSize: filterConstructor.fontPixelSize
+			anchors.top: parent.top
+
+			visible: dragTarget.acceptsDrops && dragTarget.containsItem === null
+
+
+			validator: DoubleValidator{}
+			//readonly property var numberRegex: "^[0-9]+(?.[0.9]+)?$"
+
+			onAccepted: {
+				createNumber(text)
+				dropText.text = dragTarget.defaultText
+			}
+
+			onFocusChanged: {
+				if(!focus && acceptableInput)
+						createNumber(text)
+				dropText.text = !readOnly && focus ? "" : dragTarget.defaultText
+
+				if(!focus) text = Qt.binding(function(){return dropText.text})
+			}
+
+			function createNumber(value)
+			{
+				if(dragTarget.containsItem !== null) return
+				var numberCreated = numberComp.createObject(dragTarget, {"value": value,	"canBeDragged": true,  "acceptsDrops": true})
+
+				dragTarget.originalWidth = dragTarget.width
+				dragTarget.width = Qt.binding(function(){ return numberCreated.width } )
+				numberCreated.releaseHere(dragTarget)
+				dragTarget.containsItem = numberCreated
+			}
+		}
 	}
+
+	Component { id: numberComp; NumberDrag {}}
 
 
 }

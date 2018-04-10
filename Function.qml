@@ -12,14 +12,22 @@ Item
 	property var parameterNames: ['a', 'b']
 	property var parameterDropKeys: [["number"], ["string"]]
 
+	property variant functionNameToImageSource: { "sum": "icons/sum.png", "sd": "icons/sigma.png", "var": "icons/variance.png", "!": "icons/negative.png"}
+	property string functionImageSource: functionNameToImageSource[functionName] !== undefined ? functionNameToImageSource[functionName] : ""
+	property bool isNested: false
+
 	Drag.keys: [ "number" ]
 
-	height: filterConstructor.blockDim
-	width: childrenRect.width
+	height: filterConstructor.blockDim + meanBar.height
+	width: functionDef.width + haakjesLinks.width + dropRow.width + haakjesRechts.width + extraMeanWidth
+	property real extraMeanWidth: (functionName === "mean" ? 10 : 0)
 
 	function shouldDrag(mouse)
 	{
-		return mouse.x <= haakjesLinks.width + haakjesLinks.x || mouse.x > haakjesRechts.x;
+		if(!acceptsDrops)
+			return true
+
+		return mouse.x <= functionDef.x + functionDef.width || ( showParentheses && ( mouse.x <= haakjesLinks.width + haakjesLinks.x || mouse.x > haakjesRechts.x)) || (meanBar.visible  && mouse.y < meanBar.height + 6);
 	}
 
 	function returnR()
@@ -34,14 +42,40 @@ Item
 		return compounded
 	}
 
+	readonly property bool showParentheses: functionName !== "mean" && (parameterNames.length > 1 || functionName === "abs")
+
+	Item
+	{
+		id: meanBar
+		visible: functionName === "mean"
+		height: visible ? 6 : 0
+
+		anchors.left: parent.left
+		anchors.right: parent.right
+		anchors.top: parent.top
+
+		Rectangle
+		{
+
+			color: "black"
+
+			anchors.left: parent.left
+			anchors.right: parent.right
+			anchors.top: parent.top
+			anchors.topMargin: 2
+
+			height: 2
+		}
+	}
+
 	Item
 	{
 		id: functionDef
-		anchors.top: parent.top
+		anchors.top: meanBar.top
 		anchors.bottom: parent.bottom
 
-
-		width: functionText.width
+		x: extraMeanWidth / 2
+		width: functionText.visible ? functionText.width : functionImg.width
 
 		Text
 		{
@@ -53,31 +87,51 @@ Item
 			verticalAlignment: Text.AlignVCenter
 			horizontalAlignment: Text.AlignHCenter
 
-			text: functionName
+			text: functionName === "mean" || functionName === "abs" ? "" : functionName
 			font.pixelSize: filterConstructor.fontPixelSize
+
+			visible: !functionImg.visible
+		}
+
+
+		Image
+		{
+			id: functionImg
+
+			visible: functionImageSource !== ""
+
+			source: functionImageSource
+
+			height: filterConstructor.blockDim
+			width: height
+			anchors.verticalCenter: parent.verticalCenter
 		}
 	}
 
 	Text
 	{
 		id: haakjesLinks
-		anchors.top: parent.top
+		anchors.top: meanBar.top
 		anchors.bottom: parent.bottom
-		width: filterConstructor.blockDim / 2
+
 		x: functionDef.width + functionDef.x
 
 		verticalAlignment: Text.AlignVCenter
 		horizontalAlignment: Text.AlignHCenter
 
-		text: "("
-		font.pixelSize: filterConstructor.fontPixelSize
+		width: showParentheses ? filterConstructor.blockDim / 3 : 0
+		text: ! showParentheses ? "" : functionName === "abs" ? "|" : "("
+		font.pixelSize: filterConstructor.fontPixelSize * (functionName === "abs" ? 1.2 : 1)
+		font.bold: functionName === "abs"
+
 	}
 
 	Row
 	{
 		id: dropRow
 
-		anchors.top: parent.top
+		anchors.topMargin: functionName === "abs" ? 3 : 0
+		anchors.top: meanBar.bottom
 		anchors.bottom: parent.bottom
 		x: haakjesLinks.width + haakjesLinks.x
 		width: 0
@@ -99,6 +153,15 @@ Item
 				return widthOut
 			}
 
+			property var rowHeightCalc: function()
+			{
+				var heightOut = filterConstructor.blockDim
+				for(var i=0; i<funcRoot.parameterNames.length; i++)
+					heightOut = Math.max(dropRepeat.itemAt(i).height, heightOut)
+
+				return heightOut
+			}
+
 			onItemAdded: dropRow.width = Qt.binding(rowWidthCalc)
 			onItemRemoved: dropRow.width = Qt.binding(rowWidthCalc)
 
@@ -118,15 +181,18 @@ Item
 				DropSpot {
 					id: spot
 
-					height: dropRow.height
-					//width: implicitWidth
-					implicitWidth: originalWidth//  dropRow.implicitWidthDrops
+					height: implicitHeight
+					implicitWidth: originalWidth
+					implicitHeight: dropRow.height
 
 					acceptsDrops: funcRoot.acceptsDrops
 
 					defaultText: funcRoot.parameterNames[index]
 					dropKeys: funcRoot.parameterDropKeys[index]
 					keys: funcRoot.parameterDropKeys[index]
+
+					droppedShouldBeNested: funcRoot.parameterNames.length === 1 && functionName !== "abs" && functionName !== "mean"
+					shouldShowX: true
 				}
 
 				Text
@@ -147,15 +213,16 @@ Item
 	Text
 	{
 		id: haakjesRechts
-		anchors.top: parent.top
+		anchors.top: meanBar.top
 		anchors.bottom: parent.bottom
-		width: filterConstructor.blockDim / 2
 		x: dropRow.x + dropRow.width
 
 		verticalAlignment: Text.AlignVCenter
 		horizontalAlignment: Text.AlignHCenter
 
-		text: ")"
-		font.pixelSize: filterConstructor.fontPixelSize
+		width: showParentheses ? filterConstructor.blockDim / 3 : 0
+		text: ! showParentheses ? "" : functionName === "abs" ? "|" : ")"
+		font.pixelSize: filterConstructor.fontPixelSize * (functionName === "abs" ? 1.2 : 1)
+		font.bold: functionName === "abs"
 	}
 }

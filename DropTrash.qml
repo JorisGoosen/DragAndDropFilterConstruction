@@ -8,25 +8,39 @@ DropArea {
 	keys: [ "number", "boolean", "string", "variable" ]
 
 	onDropped: if(drop.drag.source !== null) drop.drag.source.destroy()
+	property real aspect: 1.7
+	width: height / aspect
+	property real iconPadding: 0.9
 
-	width: trashIcon.width + iconPadding
-	property real iconPadding: 4
+	property bool somethingHovers: false
 
-	Rectangle
-	{
-		anchors.fill: parent
-		border.color: "grey"
-		border.width: 1
-	}
+	onEntered: somethingHovers = true
+	onExited: somethingHovers = false
 
 	Image
 	{
 		id:	trashIcon
 		anchors.centerIn: parent
-		height: Math.min(trashCan.height - parent.iconPadding, 64)
-		width: height
 
-		source: "icons/recycle.svg"
+		property real sizer: (trashCan.height < trashCan.width * aspect ? trashCan.height : trashCan.width * aspect)
+
+		height: sizer * parent.iconPadding
+		width: (sizer / aspect) * parent.iconPadding
+
+		source: somethingHovers ? "icons/trashcan_open.svg" : "icons/trashcan.svg"
+	}
+
+	MouseArea
+	{
+		anchors.fill: parent
+
+		onDoubleClicked: parent.destroyAll()
+	}
+
+	function destroyAll()
+	{
+		for(var i=scriptColumn.children.length-1; i >= 0; i--)
+			scriptColumn.children[i].destroy()
 	}
 
 

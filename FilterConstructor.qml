@@ -4,15 +4,27 @@ import QtQuick 2.0
 Item {
 
 	id: filterConstructor
-	property real blockDim: 20
+	property real blockDim: 24
 	property real fontPixelSize: 16
 	property var allKeys: ["number", "boolean", "string", "variable"]
+
+	ColumnsSelector
+	{
+		id: columnsRow
+		anchors.top: parent.top
+		anchors.left: parent.left
+		anchors.right: parent.right
+
+
+		height: filterConstructor.blockDim
+
+	}
 
 	Rectangle
 	{
 		id: operatorLists
 
-		anchors.top: parent.top
+		anchors.top: columnsRow.bottom
 		anchors.left: parent.left
 		anchors.bottom: parent.bottom
 
@@ -32,7 +44,7 @@ Item {
 				ListElement	{ type: "operator";	operator: "^";	}
 				ListElement	{ type: "operator";	operator: "%";	}
 				ListElement	{ type: "separator" }
-				ListElement	{ type: "operator";	operator: "=";	}
+				ListElement	{ type: "operator";	operator: "==";	}
 				ListElement	{ type: "operator";	operator: "!=";	}
 				ListElement	{ type: "operator";	operator: "<";	}
 				ListElement	{ type: "operator";	operator: ">";	}
@@ -40,8 +52,7 @@ Item {
 				ListElement	{ type: "operator";	operator: ">=";	}
 				ListElement	{ type: "operator";	operator: "&";	}
 				ListElement	{ type: "operator";	operator: "|";	}
-				ListElement	{ type: "function";	functionName: "!"; functionParameters: "..."; functionParamTypes: "boolean"	}
-
+				ListElement	{ type: "function";	functionName: "!"; functionParameters: "logical"; functionParamTypes: "boolean"	}
 			}
 			//anchors.top: parent.top
 			//anchors.left: parent.left
@@ -54,7 +65,7 @@ Item {
 	{
 		id: filterHintsColumns
 
-		anchors.top: parent.top
+		anchors.top: columnsRow.bottom
 		anchors.left: operatorLists.right
 		anchors.right: funcVarLists.left
 		anchors.bottom: parent.bottom
@@ -63,22 +74,12 @@ Item {
 
 		z: 2
 
-		ColumnsSelector
-		{
-			id: columnsRow
-			anchors.top: parent.top
-			anchors.left: parent.left
-			anchors.right: parent.right
-			anchors.margins: 2
 
-			height: filterConstructor.blockDim
-
-		}
 
 		Rectangle
 		{
 			z: parent.z + 1
-			anchors.top: columnsRow.bottom
+			anchors.top: parent.top
 			anchors.left: parent.left
 			anchors.right: parent.right
 			anchors.bottom: hints.top
@@ -86,24 +87,58 @@ Item {
 			border.width: 1
 			border.color: "grey"
 
-			Column
+			ScrollView
 			{
-				z: parent.z + 1
-				id: scriptColumn
-
+				id: scrollScriptColumn
 				anchors.fill: parent
 				anchors.margins: 4
 
-				OperatorDrag { operator: "-" }
-				OperatorDrag { operator: "*" }
+				horizontalScrollBarPolicy: Qt.ScrollBarAsNeeded
+				verticalScrollBarPolicy: Qt.ScrollBarAsNeeded
 
-				NumberDrag { value: 1 }
-				NumberDrag { value: 2 }
-				NumberDrag { value: 3 }
+				contentItem: Item {
+					width: scriptColumn.childrenRect.width;
+					height: scriptColumn.childrenRect.height;
 
+					Column
+					{
+						z: parent.z + 1
+						id: scriptColumn
 
+						anchors.fill: parent
+						//anchors.margins: 4
 
+						OperatorDrag { operator: "-" }
+						OperatorDrag { operator: "*" }
+
+						NumberDrag { value: 1 }
+						NumberDrag { value: 2 }
+						NumberDrag { value: 3 }
+					}
+
+					MouseArea
+					{
+						anchors.fill: parent
+
+						onClicked: scriptColumn.focus = true
+					}
+
+				}
 			}
+
+			DropTrash
+			{
+				id: trashCan
+
+				anchors.bottom: parent.bottom
+				anchors.right: parent.right
+				anchors.bottomMargin: scrollScriptColumn.__horizontalScrollBar.visible ? 20 : 0
+				anchors.rightMargin: scrollScriptColumn.__verticalScrollBar.visible ? 20 : 0
+
+				height: 110
+			}
+
+
 		}
 
 		TextArea
@@ -113,8 +148,10 @@ Item {
 			text: "try doubleclicking or dragging some stuff!"
 
 			anchors.left: parent.left
-			anchors.right: trashCan.right
+			anchors.right: parent.right
 			anchors.bottom: printR.top
+
+			height: 80
 
 		}
 
@@ -133,18 +170,11 @@ Item {
 
 
 			anchors.left: parent.left
-			anchors.right: trashCan.right
-			anchors.bottom: parent.bottom
-		}
-
-		DropTrash
-		{
-			id: trashCan
-
-			anchors.top: hints.top
-			anchors.bottom: parent.bottom
 			anchors.right: parent.right
+			anchors.bottom: parent.bottom
 		}
+
+
 
 	}
 
@@ -152,14 +182,14 @@ Item {
 	{
 		id: funcVarLists
 
-		anchors.top: parent.top
+		anchors.top: columnsRow.bottom
 		anchors.right: parent.right
 		anchors.bottom: parent.bottom
 
 		border.width: 1
 		border.color: "grey"
 
-		width: blockDim * 6
+		width: blockDim * 3
 
 		ElementView
 		{

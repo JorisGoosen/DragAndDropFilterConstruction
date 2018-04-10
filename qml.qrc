@@ -38,6 +38,8 @@
         <file>icons/sigma.png</file>
         <file>icons/sum.png</file>
         <file>icons/variance.png</file>
+        <file>icons/trashcan.svg</file>
+        <file>icons/trashcan_open.svg</file>
     </qresource>
     <qresource prefix="/icons"/>
 </RCC>

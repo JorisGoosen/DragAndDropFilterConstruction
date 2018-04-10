@@ -12,20 +12,26 @@ Item
 	property bool isNested: false
 
 
-	height: filterConstructor.blockDim
+	height: Math.max(filterConstructor.blockDim, leftDrop.height, rightDrop.height)
 	width: haakjesLinks.width + leftDrop.width + opWidth + rightDrop.width + haakjesRechts.width
+
+	property real opWidth: opImg.visible ? opImg.width : opText.width
+	property real opX: opImg.visible ? opImg.x : opText.x
 
 	function shouldDrag(mouse)
 	{
-		return mouse.x <= haakjesLinks.width || mouse.x > haakjesRechts.x || ( mouse.x > opX && mouse.x < opWidth);
+		if(!acceptsDrops)
+			return true
+
+		return mouse.x <= haakjesLinks.width || mouse.x > haakjesRechts.x || ( mouse.x > opX && mouse.x < opX + opWidth);
 	}
 
 	function returnR()
 	{
 		var compounded = "("
-		compounded += leftDrop.containsItem !== null ? leftDrop.containsItem.returnR() : ""
+		compounded += leftDrop.containsItem !== null ? leftDrop.containsItem.returnR() : "null"
 		compounded += " " + operator + " "
-		compounded += rightDrop.containsItem !== null ? rightDrop.containsItem.returnR() : ""
+		compounded += rightDrop.containsItem !== null ? rightDrop.containsItem.returnR() : "null"
 		compounded += ")"
 
 		return compounded
@@ -56,7 +62,9 @@ Item
 		x: haakjesLinks.width
 
 		width: implicitWidth
+		height: implicitHeight
 		implicitWidth: opRoot.initialWidth / 4
+		implicitHeight: filterConstructor.blockDim
 
 		acceptsDrops: parent.acceptsDrops
 		droppedShouldBeNested: true
@@ -95,17 +103,16 @@ Item
 		visible: !opImg.visible
 	}
 
-	property real opWidth: opImg.visible ? opImg.width : opText.width
-	property real opX: opImg.visible ? opImg.x : opText.x
+
 
 	DropSpot {
 		dropKeys: ["number"]
 
 		id: rightDrop
-		anchors.top: parent.top
-		anchors.bottom: parent.bottom
+		height: implicitHeight
 		width: implicitWidth
 		implicitWidth: opRoot.initialWidth / 4
+		implicitHeight: filterConstructor.blockDim
 		x: opX + opWidth
 
 		acceptsDrops: parent.acceptsDrops

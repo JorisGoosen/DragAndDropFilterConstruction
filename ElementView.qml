@@ -3,10 +3,14 @@ import QtQuick 2.0
 ListView {
 	id: listOfStuff
 
+	clip: true
+
 	delegate: MouseArea
 	{
 		width:  ListView.view.width
 		height: elementLoader.height
+
+		z: 5
 
 		Loader
 		{
