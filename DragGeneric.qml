@@ -6,10 +6,7 @@ MouseArea {
 
 	z: 2
 
-	property bool canBeDragged: true
-
-	//acceptedButtons: canBeDragged ? Qt.LeftButton : Qt.NoButton
-
+	property var alternativeDropFunction: null
 
 	property real dragHotSpotX: width / 2
 	property real dragHotSpotY: height / 2
@@ -40,7 +37,7 @@ MouseArea {
 	{
 		oldParent = parent
 
-		if(!showMe.shouldDrag(mouse) || !canBeDragged)
+		if(!showMe.shouldDrag(mouse))
 			mouse.accepted = false
 		else
 		{
@@ -49,7 +46,17 @@ MouseArea {
 		}
 	}
 
-	onReleased: this.releaseHere(dragMe.Drag.target)
+	onReleased:
+	{
+		if(alternativeDropFunction !== null)
+		{
+			var obj = alternativeDropFunction(dragMe.Drag.target)
+			if(obj != null)
+				obj.releaseHere(dragMe.Drag.target)
+		}
+		else
+			this.releaseHere(dragMe.Drag.target)
+	}
 
 	function releaseHere(dropTarget)
 	{

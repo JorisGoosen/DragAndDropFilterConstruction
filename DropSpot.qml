@@ -107,7 +107,7 @@ DropArea {
 			visible: dragTarget.acceptsDrops && dragTarget.containsItem === null
 
 
-			validator: DoubleValidator{}
+			validator: DoubleValidator{} //for now we only accept numbers
 			//readonly property var numberRegex: "^[0-9]+(?.[0.9]+)?$"
 
 			onAccepted: {
@@ -126,11 +126,14 @@ DropArea {
 			function createNumber(value)
 			{
 				if(dragTarget.containsItem !== null) return
-				var numberCreated = numberComp.createObject(dragTarget, {"value": value,	"canBeDragged": true,  "acceptsDrops": true})
+
+				var numberCreated = numberComp.createObject(dragTarget, { "value": value, "canBeDragged": true, "acceptsDrops": true })
 
 				dragTarget.originalWidth = dragTarget.width
 				dragTarget.width = Qt.binding(function(){ return numberCreated.width } )
+
 				numberCreated.releaseHere(dragTarget)
+
 				dragTarget.containsItem = numberCreated
 			}
 		}

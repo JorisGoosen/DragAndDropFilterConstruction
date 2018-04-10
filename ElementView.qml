@@ -3,7 +3,7 @@ import QtQuick 2.0
 ListView {
 	id: listOfStuff
 
-	clip: true
+	//clip: true
 
 	delegate: MouseArea
 	{
@@ -11,6 +11,17 @@ ListView {
 		height: elementLoader.height
 
 		z: 5
+
+		property var alternativeDropFunctionDef: function(targetLoc)
+		{
+			var obj = null
+
+			if(type == "operator")			obj = operatorComp.createObject(scriptColumn,	{ "alternativeDropFunction": null, "operator": operator,			"acceptsDrops": true})
+			else if(type == "function")		obj = functionComp.createObject(scriptColumn,	{ "alternativeDropFunction": null, "functionName": functionName,	"acceptsDrops": true, "parameterNames": functionParameters.split(","), "parameterDropKeys": functionParamTypes.split(",") })
+			else if(type == "number")		obj = numberComp.createObject(scriptColumn,		{ "alternativeDropFunction": null, "value": number,					"acceptsDrops": true})
+
+			return obj
+		}
 
 		Loader
 		{
@@ -21,23 +32,20 @@ ListView {
 			property real	listNumber:			type === "number"	?	number				: 1
 			property real	listWidth:			parent.width
 
+
 			anchors.horizontalCenter: parent.horizontalCenter
 
 			sourceComponent: type === "operator" ? operatorComp : type === "function" ? functionComp : type === "number" ? numberComp : type === "separator" ? separatorComp : defaultComp
 		}
 
-		onDoubleClicked:
-		{
-			if(type == "operator")			operatorComp.createObject(scriptColumn, { "operator": operator,			"canBeDragged": true,  "acceptsDrops": true})
-			else if(type == "function")		functionComp.createObject(scriptColumn, { "functionName": functionName, "canBeDragged": true,  "acceptsDrops": true, "parameterNames": functionParameters.split(","), "parameterDropKeys": functionParamTypes.split(",") })
-			else if(type == "number")		numberComp.createObject(scriptColumn,	{ "value": number,				"canBeDragged": true,  "acceptsDrops": true})
-		}
+		onDoubleClicked: alternativeDropFunctionDef()
 
+		Component { id: operatorComp;	OperatorDrag	{ operator: listOperator;		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef } }
+		Component { id: functionComp;	FunctionDrag	{ functionName: listFunction;	acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef } }
+		Component { id: numberComp;		NumberDrag		{ value: listNumber;									alternativeDropFunction: alternativeDropFunctionDef } }
+		Component { id: separatorComp;	Item			{ height: filterConstructor.blockDim; width: listWidth; Rectangle { height: 1; color: "black"; width: listWidth ; anchors.centerIn: parent }  } }
+		Component { id: defaultComp;	Text			{ text: "Something wrong!"; color: "red" }  }
 	}
 
-	Component { id: operatorComp;	OperatorDrag	{ canBeDragged: false; operator: listOperator;		acceptsDrops: false} }
-	Component { id: functionComp;	FunctionDrag	{ canBeDragged: false; functionName: listFunction;  acceptsDrops: false} }
-	Component { id: numberComp;		NumberDrag		{ canBeDragged: false; value: listNumber} }
-	Component { id: separatorComp;	Item			{ height: filterConstructor.blockDim; width: listWidth; Rectangle { height: 1; color: "black"; width: listWidth ; anchors.centerIn: parent }  } }
-	Component { id: defaultComp;	Text			{ text: "Something wrong!"; color: "red" }  }
+
 }

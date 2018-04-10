@@ -72,7 +72,8 @@ Item {
 		border.width: 1
 		border.color: "grey"
 
-		z: 2
+		z: -1
+		clip: true
 
 
 
@@ -86,6 +87,8 @@ Item {
 
 			border.width: 1
 			border.color: "grey"
+
+			clip: true
 
 			ScrollView
 			{
@@ -151,7 +154,7 @@ Item {
 			anchors.right: parent.right
 			anchors.bottom: printR.top
 
-			height: 80
+			height: 60
 
 		}
 
