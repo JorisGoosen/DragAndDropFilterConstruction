@@ -19,8 +19,15 @@ Item
 		font.pixelSize: filterConstructor.fontPixelSize
 	}
 
-	function shouldDrag(mouse)
+	function shouldDrag(mouseX, mouseY)
 	{
 		return true;
 	}
+
+	function returnRightMostDropSpot()
+	{
+		return null
+	}
+
+	function returnR() { return value; }
 }

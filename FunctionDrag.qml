@@ -9,8 +9,6 @@ DragGeneric {
 
 	property bool acceptsDrops: true
 
-	function returnR() { return showMe.returnR(); }
-
 	Function
 	{
 		id: showMe

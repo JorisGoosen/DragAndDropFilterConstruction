@@ -6,8 +6,6 @@ DragGeneric {
 
 	shownChild: showMe
 
-	function returnR() { return columnName; }
-
 	JASPColumn
 	{
 		id: showMe

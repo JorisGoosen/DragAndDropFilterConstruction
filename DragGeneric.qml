@@ -14,6 +14,8 @@ MouseArea {
 	property real dragX: dragMe.x - mapToItem(dragMe.parent, 0, 0).x
 	property real dragY: dragMe.y - mapToItem(dragMe.parent, 0, 0).y
 
+	property bool iHaveAnEmptyLeftDropSpot: false
+
 
 	objectName: "DragGeneric"
 	property var shownChild: null
@@ -33,11 +35,14 @@ MouseArea {
 
 	property var oldParent: null
 
+	hoverEnabled: true
+	cursorShape: (containsMouse && showMe.shouldDrag(mouseX, mouseY)) || drag.active  ? Qt.PointingHandCursor : Qt.ArrowCursor
+
 	onPressed:
 	{
 		oldParent = parent
 
-		if(!showMe.shouldDrag(mouse))
+		if(!showMe.shouldDrag(mouse.x, mouse.y))
 			mouse.accepted = false
 		else
 		{
@@ -60,6 +65,24 @@ MouseArea {
 
 	function releaseHere(dropTarget)
 	{
+		if(oldParent === null && dropTarget === null) //just created and not dropped anywhere specific!
+		{
+			var newDropTarget = this.determineReasonableInsertionSpot() //So lets try to find a better place, make it as userfriendly as possible
+			if(newDropTarget !== null)
+			{
+				this.releaseHere(newDropTarget)
+				return
+			}
+			else if(iHaveAnEmptyLeftDropSpot)
+			{
+				//maybe gobble something up instead of the other way 'round?
+				this.releaseHere(scriptColumn)
+
+				FIX ME HERE!
+
+			}
+
+		}
 
 		if(oldParent !== null && oldParent.objectName === "DropSpot" && dropTarget !== oldParent )
 		{
@@ -93,6 +116,28 @@ MouseArea {
 
 		scriptColumn.focus = true
 	}
+
+	function determineReasonableInsertionSpot()
+	{
+		if(scriptColumn.data.length === 0) return null
+
+		var lastScriptScrap = scriptColumn.data[scriptColumn.data.length - 1]
+
+		if(lastScriptScrap === this)
+		{
+			if(scriptColumn.data.length === 1)
+				return null
+
+			lastScriptScrap = scriptColumn.data[scriptColumn.data.length - 2]
+			if(lastScriptScrap === this)
+				return null //cannot happen hopefully?
+		}
+
+		return lastScriptScrap.returnRightMostDropSpot()
+	}
+
+	function returnR()					{ return shownChild.returnR(); }
+	function returnRightMostDropSpot()	{ return shownChild.returnRightMostDropSpot() }
 
 
 	Item {

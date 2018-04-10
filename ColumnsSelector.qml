@@ -28,13 +28,9 @@ Rectangle
 
 			onDoubleClicked: createFunc()
 
-			property var createFunc: function () { return columnComp.createObject(scriptColumn, { "columnName": name, "columnIcon": type, "alternativeDropFunction": null}) }
+			property var createFunc: function () { return columnComp.createObject(scriptColumn, { "columnName": name, "columnIcon": type, "alternativeDropFunction": null } ) }
 
-			Component
-			{
-				id: columnComp
-				ColumnDrag {  }
-			}
+			Component {	id: columnComp;	ColumnDrag { }	}
 		}
 	}
 }

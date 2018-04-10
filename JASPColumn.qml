@@ -36,8 +36,15 @@ Item
 		text: columnName
 	}
 
-	function shouldDrag(mouse)
+	function shouldDrag(mouseX, mouseY)
 	{
 		return true;
 	}
+
+	function returnRightMostDropSpot()
+	{
+		return null
+	}
+
+	function returnR() { return columnName; }
 }

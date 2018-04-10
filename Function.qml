@@ -22,12 +22,12 @@ Item
 	width: functionDef.width + haakjesLinks.width + dropRow.width + haakjesRechts.width + extraMeanWidth
 	property real extraMeanWidth: (functionName === "mean" ? 10 : 0)
 
-	function shouldDrag(mouse)
+	function shouldDrag(mouseX, mouseY)
 	{
 		if(!acceptsDrops)
 			return true
 
-		return mouse.x <= functionDef.x + functionDef.width || ( showParentheses && ( mouse.x <= haakjesLinks.width + haakjesLinks.x || mouse.x > haakjesRechts.x)) || (meanBar.visible  && mouse.y < meanBar.height + 6);
+		return mouseX <= functionDef.x + functionDef.width || ( showParentheses && ( mouseX <= haakjesLinks.width + haakjesLinks.x || mouseX > haakjesRechts.x)) || (meanBar.visible  && mouseY < meanBar.height + 6);
 	}
 
 	function returnR()
@@ -40,6 +40,11 @@ Item
 		compounded += ")"
 
 		return compounded
+	}
+
+	function returnRightMostDropSpot()
+	{
+		return rightMostEmptyDropSpot()
 	}
 
 	readonly property bool showParentheses: functionName !== "mean" && (parameterNames.length > 1 || functionName === "abs")
@@ -160,6 +165,29 @@ Item
 					heightOut = Math.max(dropRepeat.itemAt(i).height, heightOut)
 
 				return heightOut
+			}
+
+			property var rightMostEmptyDropSpot: function()
+			{
+				var dropSpot = null
+
+				for(var i=funcRoot.parameterNames.length-1; i>=0; i--)
+				{
+					var prevDropSpot = dropSpot
+					dropSpot = dropRepeat.itemAt(i)
+
+					if(dropSpot.containsItem !== null)
+					{
+						var subResult = dropSpot.containsItem.returnRightMostDropSpot()
+						if(subResult === null) // cant put anything there but maybe we can return the previous (and thus empty dropspot?)
+							return prevDropSpot //its ok if it is null. we just cant find anything here
+						else
+							return subResult
+					}
+					//else dropSpot now contains a DropSpot with space, but lets loop back to the beginning to see if we can go further left
+				}
+
+				return dropSpot
 			}
 
 			onItemAdded: dropRow.width = Qt.binding(rowWidthCalc)

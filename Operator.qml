@@ -18,12 +18,12 @@ Item
 	property real opWidth: opImg.visible ? opImg.width : opText.width
 	property real opX: opImg.visible ? opImg.x : opText.x
 
-	function shouldDrag(mouse)
+	function shouldDrag(mouseX, mouseY)
 	{
 		if(!acceptsDrops)
 			return true
 
-		return mouse.x <= haakjesLinks.width || mouse.x > haakjesRechts.x || ( mouse.x > opX && mouse.x < opX + opWidth);
+		return mouseX <= haakjesLinks.width || mouseX > haakjesRechts.x || ( mouseX > opX && mouseX < opX + opWidth);
 	}
 
 	function returnR()
@@ -35,6 +35,13 @@ Item
 		compounded += ")"
 
 		return compounded
+	}
+
+	function returnRightMostDropSpot()
+	{
+		if(rightDrop.containsItem !== null)
+			return rightDrop.containsItem.returnRightMostDropSpot()
+		return rightDrop
 	}
 
 	Text
@@ -101,6 +108,8 @@ Item
 		font.pixelSize: filterConstructor.fontPixelSize
 
 		visible: !opImg.visible
+
+		font.bold: true
 	}
 
 
