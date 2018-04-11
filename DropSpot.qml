@@ -19,7 +19,7 @@ DropArea {
 
 	onEntered:
 	{
-		if(containsItem != null || !acceptsDrops)
+		if((containsItem !== null && containsItem !== drag.source) || !acceptsDrops)
 		{
 			drag.accepted = false
 			return
@@ -51,6 +51,11 @@ DropArea {
 	onDropped: containsItem = drop.drag.source
 
 	property var containsItem: null
+
+	onContainsItemChanged: {
+		if(containsItem == null)
+			width = Qt.binding(function(){ return dropText.contentWidth })
+	}
 
 	Item
 	{
@@ -106,40 +111,46 @@ DropArea {
 
 			visible: dragTarget.acceptsDrops && dragTarget.containsItem === null
 
-
-			validator: DoubleValidator{} //for now we only accept numbers
-			//readonly property var numberRegex: "^[0-9]+(?.[0.9]+)?$"
-
-			onAccepted: {
-				createNumber(text)
-				dropText.text = dragTarget.defaultText
-			}
+			onAccepted: focus = false
 
 			onFocusChanged: {
-				if(!focus && acceptableInput)
-						createNumber(text)
-				dropText.text = !readOnly && focus ? "" : dragTarget.defaultText
+				if(!focus)
+					tryConvertToObject()
+
+				dropText.text = focus ? "" : dragTarget.defaultText
 
 				if(!focus) text = Qt.binding(function(){return dropText.text})
 			}
 
-			function createNumber(value)
+			function tryConvertToObject()
 			{
 				if(dragTarget.containsItem !== null) return
 
-				var numberCreated = numberComp.createObject(dragTarget, { "value": value, "canBeDragged": true, "acceptsDrops": true })
+				var asNumber = parseFloat(text)
+				if(!isNaN(asNumber) && dropKeys.indexOf("number") >= 0)
+					createNumber(asNumber)
+				else if(dropKeys.indexOf("string") >= 0 && text !== "")
+					createString(text)
+			}
 
+			function createNumber(value)	{ setCreatedObjectUp(numberComp.createObject(dragTarget, { "value": value, "canBeDragged": true, "acceptsDrops": true } ) ) }
+			function createString(string)	{ setCreatedObjectUp(stringComp.createObject(dragTarget, { "text": text, "canBeDragged": true, "acceptsDrops": true } ) ) }
+
+
+			function setCreatedObjectUp(obj)
+			{
 				dragTarget.originalWidth = dragTarget.width
-				dragTarget.width = Qt.binding(function(){ return numberCreated.width } )
+				dragTarget.width = Qt.binding(function(){ return obj.width } )
 
-				numberCreated.releaseHere(dragTarget)
+				obj.releaseHere(dragTarget)
 
-				dragTarget.containsItem = numberCreated
+				dragTarget.containsItem = obj
 			}
 		}
 	}
 
 	Component { id: numberComp; NumberDrag {}}
+	Component { id: stringComp; StringDrag {}}
 
 
 }

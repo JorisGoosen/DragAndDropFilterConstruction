@@ -109,14 +109,7 @@ Item {
 						id: scriptColumn
 
 						anchors.fill: parent
-						//anchors.margins: 4
 
-						OperatorDrag { operator: "-" }
-						OperatorDrag { operator: "*" }
-
-						NumberDrag { value: 1 }
-						NumberDrag { value: 2 }
-						NumberDrag { value: 3 }
 					}
 
 					MouseArea

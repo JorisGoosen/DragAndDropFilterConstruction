@@ -5,6 +5,7 @@ DragGeneric {
 	property string columnIcon: ""
 
 	shownChild: showMe
+	dragKeys: showMe.dragKeys
 
 	JASPColumn
 	{

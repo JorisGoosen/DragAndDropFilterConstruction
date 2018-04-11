@@ -14,7 +14,8 @@ MouseArea {
 	property real dragX: dragMe.x - mapToItem(dragMe.parent, 0, 0).x
 	property real dragY: dragMe.y - mapToItem(dragMe.parent, 0, 0).y
 
-	property bool iHaveAnEmptyLeftDropSpot: false
+	property var leftDropSpot: null //should only contain something for operators I guess?
+
 
 
 	objectName: "DragGeneric"
@@ -27,9 +28,7 @@ MouseArea {
 
 	property bool nested: parent !== null && parent.objectName === "DropSpot" && parent.droppedShouldBeNested
 
-
-
-	property var dropKeys: [ "number", "boolean", "string", "variable" ] //all possible options by default
+	property var dragKeys: [ "number", "boolean", "string", "variable" ] //all possible options by default
 
 	drag.target: dragMe
 
@@ -56,7 +55,7 @@ MouseArea {
 		if(alternativeDropFunction !== null)
 		{
 			var obj = alternativeDropFunction(dragMe.Drag.target)
-			if(obj != null)
+			if(obj !== null)
 				obj.releaseHere(dragMe.Drag.target)
 		}
 		else
@@ -73,16 +72,27 @@ MouseArea {
 				this.releaseHere(newDropTarget)
 				return
 			}
-			else if(iHaveAnEmptyLeftDropSpot)
+			else if(leftDropSpot !== null) //maybe gobble something up instead of the other way 'round?
 			{
-				//maybe gobble something up instead of the other way 'round?
-				this.releaseHere(scriptColumn)
-
-				FIX ME HERE!
-
+				this.tryLeftApplication()
+				return
 			}
-
 		}
+
+		if(dropTarget !== null && dropTarget.objectName === "DropSpot")
+		{
+			var foundAtLeastOneMatchingKey = false
+			for(var dragI=0; dragI<dragKeys.length; dragI++)
+				if(dropTarget.dropKeys.indexOf(dragKeys[dragI]) >= 0)
+					foundAtLeastOneMatchingKey = true
+
+			if(!foundAtLeastOneMatchingKey)
+			{
+				releaseHere(scriptColumn)
+				return
+			}
+		}
+
 
 		if(oldParent !== null && oldParent.objectName === "DropSpot" && dropTarget !== oldParent )
 		{
@@ -133,12 +143,49 @@ MouseArea {
 				return null //cannot happen hopefully?
 		}
 
-		return lastScriptScrap.returnRightMostDropSpot()
+		return lastScriptScrap.returnEmptyRightMostDropSpot(true)
 	}
 
-	function returnR()					{ return shownChild.returnR(); }
-	function returnRightMostDropSpot()	{ return shownChild.returnRightMostDropSpot() }
+	function returnR()							{ return shownChild.returnR() }
+	function returnEmptyRightMostDropSpot()		{ return shownChild.returnEmptyRightMostDropSpot() }
+	function returnFilledRightMostDropSpot()	{ return shownChild.returnFilledRightMostDropSpot() }
 
+	function tryLeftApplication()
+	{
+		this.releaseHere(scriptColumn)
+
+		if(leftDropSpot === null || leftDropSpot.containsItem !== null || scriptColumn.data.length === 1) return
+
+		for(var i=scriptColumn.data.length - 1; i>=0; i--)
+			if(scriptColumn.data[i] !== this)
+			{
+				var gobbleMeUp = scriptColumn.data[i]
+				var putResultHere = scriptColumn
+
+				while(gobbleMeUp !== null && putResultHere !== null && gobbleMeUp !== undefined)
+				{
+
+					for(var keyI=0; keyI<gobbleMeUp.dragKeys.length; keyI++)
+						if(leftDropSpot.dropKeys.indexOf(gobbleMeUp.dragKeys[keyI])>=0)
+						{
+							gobbleMeUp.releaseHere(leftDropSpot)
+							if(putResultHere !== scriptColumn) //we went deeper
+								releaseHere(putResultHere)
+
+							return
+						}
+
+					//Ok, we couldnt actually take the entire node into ourselves. Maybe only the right part?
+					//Which means we have to place ourselves in the current gobbleMeUp!
+
+					putResultHere	= gobbleMeUp.returnFilledRightMostDropSpot()
+					if(putResultHere === null) return
+					gobbleMeUp		= putResultHere.containsItem
+				}
+
+				return
+			}
+	}
 
 	Item {
 		id: dragMe
@@ -148,10 +195,32 @@ MouseArea {
 		x: mouseArea.x
 		y: mouseArea.y
 
-		Drag.keys: dropKeys
+		Drag.keys: dragKeys
 		Drag.active: mouseArea.drag.active
 		Drag.hotSpot.x: dragHotSpotX
 		Drag.hotSpot.y: dragHotSpotY
+
+		Rectangle
+		{
+			id:	dragHandleVisualizer
+			color: "transparent"
+			radius: width
+			property real maxWidth: 12
+			height: width
+			border.color: "red"
+			border.width: 2
+
+			x: dragHotSpotX - (width / 2)
+			y: dragHotSpotY - (height / 2)
+
+			visible: mouseArea.drag.active
+			SequentialAnimation on width {
+				NumberAnimation { from: 1; to: dragHandleVisualizer.maxWidth; duration: 500;  }
+				NumberAnimation { from: dragHandleVisualizer.maxWidth; to: 1; duration: 500;  }
+				loops: Animation.Infinite
+			}
+
+		}
 
 		states: [
 			State {

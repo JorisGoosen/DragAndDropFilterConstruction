@@ -2,17 +2,17 @@ import QtQuick 2.0
 
 Item
 {
-	objectName: "Number"
-	property real value: 0
+	objectName: "String"
+	property string text: ""
 
 	height:	filterConstructor.blockDim
-	width:	nummer.contentWidth
+	width:	stringObj.contentWidth
 
 
 	Text
 	{
-		id: nummer
-		text: value
+		id: stringObj
+		text: parent.text
 
 		anchors.horizontalCenter:	parent.horizontalCenter
 		anchors.verticalCenter:		parent.verticalCenter
@@ -23,5 +23,5 @@ Item
 	function shouldDrag(mouseX, mouseY)			{ return true }
 	function returnEmptyRightMostDropSpot()		{ return null }
 	function returnFilledRightMostDropSpot()	{ return null }
-	function returnR()							{ return value; }
+	function returnR()							{ return "'" + text + "'"; }
 }

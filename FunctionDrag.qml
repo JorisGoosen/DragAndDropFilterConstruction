@@ -8,6 +8,7 @@ DragGeneric {
 	property var parameterDropKeys: ["???"]
 
 	property bool acceptsDrops: true
+	dragKeys: showMe.dragKeys
 
 	Function
 	{

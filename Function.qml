@@ -4,6 +4,7 @@ import QtQuick 2.0
 Item
 {
 	id: funcRoot
+	objectName: "Function"
 
 	property int initialWidth: filterConstructor.blockDim * 3
 	property string functionName: "sum"
@@ -15,12 +16,16 @@ Item
 	property variant functionNameToImageSource: { "sum": "icons/sum.png", "sd": "icons/sigma.png", "var": "icons/variance.png", "!": "icons/negative.png"}
 	property string functionImageSource: functionNameToImageSource[functionName] !== undefined ? functionNameToImageSource[functionName] : ""
 	property bool isNested: false
+	property var booleanReturningFunctions: ["!"]
 
-	Drag.keys: [ "number" ]
+	property var dragKeys: booleanReturningFunctions.indexOf(functionName) >= 0 ? ["boolean"] : [ "number" ]
 
 	height: filterConstructor.blockDim + meanBar.height
 	width: functionDef.width + haakjesLinks.width + dropRow.width + haakjesRechts.width + extraMeanWidth
 	property real extraMeanWidth: (functionName === "mean" ? 10 : 0)
+
+	readonly property bool showParentheses: functionName !== "mean" && (parameterNames.length > 1 || functionName === "abs")
+
 
 	function shouldDrag(mouseX, mouseY)
 	{
@@ -42,12 +47,18 @@ Item
 		return compounded
 	}
 
-	function returnRightMostDropSpot()
+	function returnEmptyRightMostDropSpot()
 	{
-		return rightMostEmptyDropSpot()
+		return dropRepeat.rightMostEmptyDropSpot()
 	}
 
-	readonly property bool showParentheses: functionName !== "mean" && (parameterNames.length > 1 || functionName === "abs")
+	function returnFilledRightMostDropSpot()
+	{
+		return dropRepeat.leftMostFilledDropSpot()
+	}
+
+
+
 
 	Item
 	{
@@ -167,6 +178,7 @@ Item
 				return heightOut
 			}
 
+			///This also goes down the tree
 			property var rightMostEmptyDropSpot: function()
 			{
 				var dropSpot = null
@@ -174,11 +186,11 @@ Item
 				for(var i=funcRoot.parameterNames.length-1; i>=0; i--)
 				{
 					var prevDropSpot = dropSpot
-					dropSpot = dropRepeat.itemAt(i)
+					dropSpot = dropRepeat.itemAt(i).getDropSpot()
 
 					if(dropSpot.containsItem !== null)
 					{
-						var subResult = dropSpot.containsItem.returnRightMostDropSpot()
+						var subResult = dropSpot.containsItem.returnEmptyRightMostDropSpot()
 						if(subResult === null) // cant put anything there but maybe we can return the previous (and thus empty dropspot?)
 							return prevDropSpot //its ok if it is null. we just cant find anything here
 						else
@@ -186,8 +198,23 @@ Item
 					}
 					//else dropSpot now contains a DropSpot with space, but lets loop back to the beginning to see if we can go further left
 				}
-
 				return dropSpot
+			}
+
+			//this does not go down the tree
+			property var leftMostFilledDropSpot: function()
+			{
+				var dropSpot = null
+
+				for(var i=0; i<funcRoot.parameterNames.length; i++)
+				{
+					var prevDropSpot = dropSpot
+					dropSpot = dropRepeat.itemAt(i).getDropSpot()
+
+					if(dropSpot.containsItem === null)
+						return prevDropSpot //its ok if it is null. we just cant find anything here
+				}
+				return dropSpot.containsItem !== null ? dropSpot : null
 			}
 
 			onItemAdded: dropRow.width = Qt.binding(rowWidthCalc)
@@ -205,6 +232,10 @@ Item
 					else
 						return "null"
 				}
+
+				function getDropSpot() { return spot }
+
+
 
 				DropSpot {
 					id: spot

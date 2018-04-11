@@ -2,11 +2,16 @@ import QtQuick 2.9
 
 Item
 {
+	objectName: "Column"
 	property string columnName: "?"
 	property string columnIcon: ""
 
 	height:	filterConstructor.blockDim
 	width:	colIcon.width + colName.width
+	property bool isNumerical: columnIcon.indexOf("nominal-text") < 0
+		//columnIcon.indexOf("scale") >= 0 || columnIcon.indexOf("ordinal") >= 0
+
+	property var dragKeys: isNumerical ? ["number"] : ["string"]
 
 	Image
 	{
@@ -41,7 +46,12 @@ Item
 		return true;
 	}
 
-	function returnRightMostDropSpot()
+	function returnEmptyRightMostDropSpot()
+	{
+		return null
+	}
+
+	function returnFilledRightMostDropSpot()
 	{
 		return null
 	}

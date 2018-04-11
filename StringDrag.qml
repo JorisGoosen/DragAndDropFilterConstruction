@@ -1,15 +1,15 @@
 import QtQuick 2.0
 
 DragGeneric {
-	property real value: 0
+	property string text: "?"
 
-	dragKeys: ["number"]
+	dragKeys: ["string"]
 	shownChild: showMe
 
-	Number
+	String
 	{
 		id: showMe
-		value: parent.value
+		text: parent.text
 		x: parent.dragX
 		y: parent.dragY
 

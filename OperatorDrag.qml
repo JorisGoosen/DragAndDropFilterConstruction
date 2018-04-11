@@ -3,23 +3,31 @@ import QtQuick 2.0
 DragGeneric {
 	shownChild: showMe
 
-	readonly property var everythingOperators: ["==", "!="]
-	readonly property var booleanOperators: ["<", ">", "<=", ">=", "!", "&", "|"]
-	readonly property bool isBoolean: booleanOperators.indexOf(operator) >= 0
-	readonly property bool isEverything: everythingOperators.indexOf(operator) >= 0
-	dropKeys: isEverything ? ["boolean", "string", "number", "variable"] : isBoolean ? ["boolean"] : ["number"]
+	readonly property var everythingOperators: ["==", "!=", ]
+	readonly property var numberCompareOperators: ["<", ">", "<=", ">="]
+	readonly property var booleanOperators: ["&", "|"]
+	readonly property bool acceptsBoolean: booleanOperators.indexOf(operator) >= 0
+	readonly property bool acceptsEverything: everythingOperators.indexOf(operator) >= 0
+	readonly property bool returnsBoolean: booleanOperators.indexOf(operator) >= 0 || numberCompareOperators.indexOf(operator) >= 0 || acceptsEverything
+
+	dragKeys: returnsBoolean ? ["boolean"] : ["number"]
+
 	property string operator: "+"
 	property bool acceptsDrops: true
 
-	property variant opImages: { '==': 'icons/equal.png', '!=': 'icons/notEqual.png', '<': 'icons/lessThan.png', '>': 'icons/greaterThan.png', '<=': 'icons/lessThanEqual.png', '>=': 'icons/greaterThanEqual.png',  '&': 'icons/and.png', '|': 'icons/or.png'}
+	property var opImages: { '==': 'icons/equal.png', '!=': 'icons/notEqual.png', '<': 'icons/lessThan.png', '>': 'icons/greaterThan.png', '<=': 'icons/lessThanEqual.png', '>=': 'icons/greaterThanEqual.png',  '&': 'icons/and.png', '|': 'icons/or.png'}
 
-	iHaveAnEmptyLeftDropSpot: true
+	leftDropSpot:		showMe.leftDropSpot
 
 	Operator
 	{
 		id: showMe
 		operator: parent.operator
-		operatorImageSource: parent.isBoolean || parent.isEverything ? parent.opImages[operator] : ""
+		operatorImageSource: parent.opImages[operator] !== null && parent.opImages[operator] !== undefined ? parent.opImages[operator] : ""
+
+		dropKeysLeft: acceptsEverything ? ["boolean", "string", "number"] : acceptsBoolean ? ["boolean"] : ["number"]
+		dropKeysRight: dropKeysLeft
+		dropKeysMirrorEachother: acceptsEverything
 
 		x: parent.dragX
 		y: parent.dragY

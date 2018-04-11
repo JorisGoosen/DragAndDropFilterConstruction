@@ -4,13 +4,18 @@ import QtQuick 2.9
 Item
 {
 	id: opRoot
+	objectName: "Operator"
 
 	property int initialWidth: filterConstructor.blockDim * 3
 	property string operator: "+"
 	property string operatorImageSource: ""
 	property bool acceptsDrops: true
 	property bool isNested: false
-
+	property var leftDropSpot: leftDrop
+	property var dropKeys: ["number"]
+	property bool dropKeysMirrorEachother: false
+	property var dropKeysLeft: dropKeys
+	property var dropKeysRight: dropKeys
 
 	height: Math.max(filterConstructor.blockDim, leftDrop.height, rightDrop.height)
 	width: haakjesLinks.width + leftDrop.width + opWidth + rightDrop.width + haakjesRechts.width
@@ -37,11 +42,18 @@ Item
 		return compounded
 	}
 
-	function returnRightMostDropSpot()
+	function returnEmptyRightMostDropSpot()
 	{
 		if(rightDrop.containsItem !== null)
-			return rightDrop.containsItem.returnRightMostDropSpot()
+			return rightDrop.containsItem.returnEmptyRightMostDropSpot()
 		return rightDrop
+	}
+
+	function returnFilledRightMostDropSpot()
+	{
+		if(rightDrop.containsItem !== null)
+			return rightDrop
+		return null
 	}
 
 	Text
@@ -61,7 +73,7 @@ Item
 	}
 
 	DropSpot {
-		dropKeys: ["number"]
+		dropKeys: !(opRoot.dropKeysMirrorEachother && rightDrop.containsItem !== null) ? opRoot.dropKeysLeft : rightDrop.containsItem.dragKeys
 
 		id: leftDrop
 		anchors.top: parent.top
@@ -115,7 +127,7 @@ Item
 
 
 	DropSpot {
-		dropKeys: ["number"]
+		dropKeys: !(opRoot.dropKeysMirrorEachother && leftDrop.containsItem !== null) ? opRoot.dropKeysRight : leftDrop.containsItem.dragKeys
 
 		id: rightDrop
 		height: implicitHeight

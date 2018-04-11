@@ -40,6 +40,8 @@
         <file>icons/variance.png</file>
         <file>icons/trashcan.svg</file>
         <file>icons/trashcan_open.svg</file>
+        <file>String.qml</file>
+        <file>StringDrag.qml</file>
     </qresource>
     <qresource prefix="/icons"/>
 </RCC>
