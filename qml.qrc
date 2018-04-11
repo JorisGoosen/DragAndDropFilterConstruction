@@ -42,6 +42,9 @@
         <file>icons/trashcan_open.svg</file>
         <file>String.qml</file>
         <file>StringDrag.qml</file>
+        <file>OperatorVertical.qml</file>
+        <file>OperatorVerticalDrag.qml</file>
+        <file>icons/divide.png</file>
     </qresource>
     <qresource prefix="/icons"/>
 </RCC>

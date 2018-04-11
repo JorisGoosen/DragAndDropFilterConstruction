@@ -112,6 +112,8 @@ MouseArea {
 
 		if(parent === oldParent ) { parent = null; parent = oldParent }
 
+
+
 		dragMe.x = 0
 		dragMe.y = 0
 		mouseArea.x = 0
@@ -123,6 +125,7 @@ MouseArea {
 			parent.height = Qt.binding(function() { return dragMe.height })
 			parent.containsItem = this
 		}
+
 
 		scriptColumn.focus = true
 	}

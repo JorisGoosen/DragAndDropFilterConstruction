@@ -8,23 +8,54 @@ Item {
 	property real fontPixelSize: 16
 	property var allKeys: ["number", "boolean", "string", "variable"]
 
-	ColumnsSelector
+	Rectangle
 	{
-		id: columnsRow
+		id: clippingAvoider
 		anchors.top: parent.top
 		anchors.left: parent.left
 		anchors.right: parent.right
 
-
 		height: filterConstructor.blockDim
+		color: "white"
+		z: 3
 
+		ElementView
+		{
+			id: columnsRow
+
+			orientation: ListView.Horizontal
+			anchors.horizontalCenter: parent.horizontalCenter
+			height: filterConstructor.blockDim
+			width: model.length * filterConstructor.blockDim
+
+			model: ListModel
+			{
+				ListElement	{ type: "operator";		operator: "+";	}
+				ListElement	{ type: "operator";		operator: "-";	}
+				ListElement	{ type: "operator";		operator: "*";	}
+				ListElement	{ type: "operatorvert";	operator: "/";	}
+				ListElement	{ type: "operator";		operator: "^";	}
+				ListElement	{ type: "operator";		operator: "%";	}
+
+				ListElement	{ type: "operator";		operator: "==";	}
+				ListElement	{ type: "operator";		operator: "!=";	}
+				ListElement	{ type: "operator";		operator: "<";	}
+				ListElement	{ type: "operator";		operator: ">";	}
+				ListElement	{ type: "operator";		operator: "<=";	}
+				ListElement	{ type: "operator";		operator: ">=";	}
+				ListElement	{ type: "operator";		operator: "&";	}
+				ListElement	{ type: "operator";		operator: "|";	}
+				ListElement	{ type: "function";		functionName: "!"; functionParameters: "logical"; functionParamTypes: "boolean"	}
+
+			}
+		}
 	}
 
 	Rectangle
 	{
 		id: operatorLists
 
-		anchors.top: columnsRow.bottom
+		anchors.top: clippingAvoider.bottom
 		anchors.left: parent.left
 		anchors.bottom: parent.bottom
 
@@ -37,22 +68,28 @@ Item {
 		{
 			model: ListModel
 			{
-				ListElement	{ type: "operator";	operator: "+";	}
-				ListElement	{ type: "operator";	operator: "-";	}
-				ListElement	{ type: "operator";	operator: "*";	}
-				ListElement	{ type: "operator";	operator: "/";	}
-				ListElement	{ type: "operator";	operator: "^";	}
-				ListElement	{ type: "operator";	operator: "%";	}
+				ListElement	{ type: "operator";		operator: "+";	}
+				ListElement	{ type: "operator";		operator: "-";	}
+				ListElement	{ type: "operator";		operator: "*";	}
+				ListElement	{ type: "operatorvert";	operator: "/";	}
+				ListElement	{ type: "operator";		operator: "^";	}
+				ListElement	{ type: "operator";		operator: "%";	}
 				ListElement	{ type: "separator" }
-				ListElement	{ type: "operator";	operator: "==";	}
-				ListElement	{ type: "operator";	operator: "!=";	}
-				ListElement	{ type: "operator";	operator: "<";	}
-				ListElement	{ type: "operator";	operator: ">";	}
-				ListElement	{ type: "operator";	operator: "<=";	}
-				ListElement	{ type: "operator";	operator: ">=";	}
-				ListElement	{ type: "operator";	operator: "&";	}
-				ListElement	{ type: "operator";	operator: "|";	}
-				ListElement	{ type: "function";	functionName: "!"; functionParameters: "logical"; functionParamTypes: "boolean"	}
+				ListElement	{ type: "operator";		operator: "==";	}
+				ListElement	{ type: "operator";		operator: "!=";	}
+				ListElement	{ type: "operator";		operator: "<";	}
+				ListElement	{ type: "operator";		operator: ">";	}
+				ListElement	{ type: "operator";		operator: "<=";	}
+				ListElement	{ type: "operator";		operator: ">=";	}
+				ListElement	{ type: "operator";		operator: "&";	}
+				ListElement	{ type: "operator";		operator: "|";	}
+				ListElement	{ type: "function";		functionName: "!"; functionParameters: "logical"; functionParamTypes: "boolean"	}
+
+				ListElement	{ type: "separator" }
+				ListElement { type: "column";		columnName: "dummyNominalText";	columnIcon: "qrc:/icons/variable-nominal-text.svg";	}
+				ListElement { type: "column";		columnName: "dummyNominal";		columnIcon: "qrc:/icons/variable-nominal.svg";		}
+				ListElement { type: "column";		columnName: "dummyOrdinal";		columnIcon: "qrc:/icons/variable-ordinal.svg";		}
+				ListElement { type: "column";		columnName: "dummyScale";		columnIcon: "qrc:/icons/variable-scale.svg";		}
 			}
 			//anchors.top: parent.top
 			//anchors.left: parent.left
@@ -65,7 +102,7 @@ Item {
 	{
 		id: filterHintsColumns
 
-		anchors.top: columnsRow.bottom
+		anchors.top: clippingAvoider.bottom
 		anchors.left: operatorLists.right
 		anchors.right: funcVarLists.left
 		anchors.bottom: parent.bottom
@@ -79,6 +116,7 @@ Item {
 
 		Rectangle
 		{
+			id: rectangularColumnContainer
 			z: parent.z + 1
 			anchors.top: parent.top
 			anchors.left: parent.left
@@ -100,8 +138,8 @@ Item {
 				verticalScrollBarPolicy: Qt.ScrollBarAsNeeded
 
 				contentItem: Item {
-					width: scriptColumn.childrenRect.width;
-					height: scriptColumn.childrenRect.height;
+					width: Math.max(rectangularColumnContainer.width-30, scriptColumn.childrenRect.width)
+					height: Math.max(rectangularColumnContainer.height-30, scriptColumn.childrenRect.height)
 
 					Column
 					{
@@ -109,13 +147,11 @@ Item {
 						id: scriptColumn
 
 						anchors.fill: parent
-
 					}
 
 					MouseArea
 					{
 						anchors.fill: parent
-
 						onClicked: scriptColumn.focus = true
 					}
 
@@ -178,7 +214,7 @@ Item {
 	{
 		id: funcVarLists
 
-		anchors.top: columnsRow.bottom
+		anchors.top: clippingAvoider.bottom
 		anchors.right: parent.right
 		anchors.bottom: parent.bottom
 

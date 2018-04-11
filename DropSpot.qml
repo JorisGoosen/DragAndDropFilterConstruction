@@ -8,8 +8,8 @@ DropArea {
 	property var dropKeys: [ "number", "boolean", "string", "variable" ]
 	property alias dropProxy: dragTarget
 
-	width:  dropText.contentWidth
-	height: 64
+	width:  !acceptsDrops && !shouldShowX ? 0 : dropText.contentWidth
+	height: !acceptsDrops && !shouldShowX ? 0 : 64
 	keys: dropKeys
 	property real originalWidth: defaultText.length * filterConstructor.blockDim * 0.4
 	property bool acceptsDrops: true

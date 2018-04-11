@@ -20,7 +20,7 @@ Item
 
 	property var dragKeys: booleanReturningFunctions.indexOf(functionName) >= 0 ? ["boolean"] : [ "number" ]
 
-	height: filterConstructor.blockDim + meanBar.height
+	height: meanBar.height + Math.max(dropRow.height, filterConstructor.blockDim)
 	width: functionDef.width + haakjesLinks.width + dropRow.width + haakjesRechts.width + extraMeanWidth
 	property real extraMeanWidth: (functionName === "mean" ? 10 : 0)
 
@@ -136,22 +136,34 @@ Item
 		horizontalAlignment: Text.AlignHCenter
 
 		width: showParentheses ? filterConstructor.blockDim / 3 : 0
-		text: ! showParentheses ? "" : functionName === "abs" ? "|" : "("
-		font.pixelSize: filterConstructor.fontPixelSize * (functionName === "abs" ? 1.2 : 1)
-		font.bold: functionName === "abs"
+		text: ! showParentheses || functionName === "abs" ? "" : "("
+		font.pixelSize: filterConstructor.fontPixelSize
+
+		Rectangle
+		{
+			anchors.top: parent.top
+			anchors.bottom: parent.bottom
+			anchors.margins: 2
+			anchors.horizontalCenter: parent.horizontalCenter
+
+			color: "black"
+			width: 2
+
+			visible: functionName === "abs"
+		}
 
 	}
 
 	Row
 	{
 		id: dropRow
-
-		anchors.topMargin: functionName === "abs" ? 3 : 0
 		anchors.top: meanBar.bottom
-		anchors.bottom: parent.bottom
+		//anchors.bottom: parent.bottom
+
 		x: haakjesLinks.width + haakjesLinks.x
-		width: 0
-			//dropRepeat.width //(implicitWidthDrops * parent.parameterNames.length) + (4 * ( parent.parameterNames.length - 1))
+
+		width:	dropRepeat.rowWidthCalc()
+		height: dropRepeat.rowHeightCalc()
 
 		property real implicitWidthDrops: parent.acceptsDrops ? funcRoot.initialWidth / 4 : 0
 
@@ -217,13 +229,19 @@ Item
 				return dropSpot.containsItem !== null ? dropSpot : null
 			}
 
-			onItemAdded: dropRow.width = Qt.binding(rowWidthCalc)
-			onItemRemoved: dropRow.width = Qt.binding(rowWidthCalc)
+			function rebindSize()
+			{
+				dropRow.width	= Qt.binding(rowWidthCalc)
+				dropRow.height	= Qt.binding(rowHeightCalc)
+			}
+
+			onItemAdded:	rebindSize()
+			onItemRemoved:	rebindSize()
 
 			Item
 			{
 				width: spot.width + comma.width
-				height: dropRow.height
+				height: spot.height
 
 				function returnR()
 				{
@@ -242,7 +260,7 @@ Item
 
 					height: implicitHeight
 					implicitWidth: originalWidth
-					implicitHeight: dropRow.height
+					implicitHeight: filterConstructor.blockDim
 
 					acceptsDrops: funcRoot.acceptsDrops
 
@@ -280,8 +298,20 @@ Item
 		horizontalAlignment: Text.AlignHCenter
 
 		width: showParentheses ? filterConstructor.blockDim / 3 : 0
-		text: ! showParentheses ? "" : functionName === "abs" ? "|" : ")"
-		font.pixelSize: filterConstructor.fontPixelSize * (functionName === "abs" ? 1.2 : 1)
-		font.bold: functionName === "abs"
+		text: ! showParentheses || functionName === "abs" ? "" : ")"
+		font.pixelSize: filterConstructor.fontPixelSize
+
+		Rectangle
+		{
+			anchors.top: parent.top
+			anchors.bottom: parent.bottom
+			anchors.margins: 2
+			anchors.horizontalCenter: parent.horizontalCenter
+
+			color: "black"
+			width: 2
+
+			visible: functionName === "abs"
+		}
 	}
 }

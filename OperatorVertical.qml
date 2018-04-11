@@ -3,12 +3,11 @@ import QtQuick 2.9
 
 Item
 {
-
 	id: opRoot
-	objectName: "Operator"
+	objectName: "Operator" //not really ?
 
-	property int initialWidth:  filterConstructor.blockDim * acceptsDrops ? 3 : 2
-	property string operator: "+"
+	property int initialHeight: filterConstructor.blockDim * 3
+	property string operator: "/"
 	property string operatorImageSource: ""
 	property bool acceptsDrops: true
 	property bool isNested: false
@@ -18,18 +17,19 @@ Item
 	property var dropKeysLeft: dropKeys
 	property var dropKeysRight: dropKeys
 
-	height: Math.max(filterConstructor.blockDim, leftDrop.height, rightDrop.height)
-	width:(haakjesLinks.visible ? haakjesLinks.width : 0) + leftDrop.width + opWidth + rightDrop.width + (haakjesRechts.visible ? haakjesRechts.width : 0)
+	height: opHeight + rightDrop.height + leftDrop.height
+	width: Math.max(leftDrop.width, rightDrop.width, opWidth)
 
 	property real opWidth: opImg.visible ? opImg.width : opText.width
-	property real opX: opImg.visible ? opImg.x : opText.x
+	property real opHeight: opImg.visible ? opImg.height : opText.height
+	property real opY: opImg.visible ? opImg.y : opText.y
 
 	function shouldDrag(mouseX, mouseY)
 	{
 		if(!acceptsDrops)
 			return true
 
-		return mouseX <= haakjesLinks.width || mouseX > haakjesRechts.x || ( mouseX > opX && mouseX < opX + opWidth);
+		return  mouseY > opY && mouseY < opY + opHeight
 	}
 
 	function returnR()
@@ -57,72 +57,71 @@ Item
 		return null
 	}
 
-	Text
-	{
-		id: haakjesLinks
-		anchors.top: parent.top
-		anchors.bottom: parent.bottom
-		width: opRoot.isNested ? opRoot.initialWidth / 8 : 0
-
-		verticalAlignment: Text.AlignVCenter
-		horizontalAlignment: Text.AlignHCenter
-
-		text: "("
-		font.pixelSize: filterConstructor.fontPixelSize
-
-		visible: opRoot.isNested
-	}
 
 	DropSpot {
 		dropKeys: !(opRoot.dropKeysMirrorEachother && rightDrop.containsItem !== null) ? opRoot.dropKeysLeft : rightDrop.containsItem.dragKeys
-
 		id: leftDrop
-		x: haakjesLinks.width
-		anchors.verticalCenter: parent.verticalCenter
 
+		anchors.horizontalCenter: parent.horizontalCenter
 
-		width: acceptsDrops ? implicitWidth : 0
 		height: acceptsDrops ? implicitHeight : 0
-		implicitWidth: opRoot.initialWidth / 4
-		implicitHeight: filterConstructor.blockDim
+		width: acceptsDrops ? implicitWidth : 0
+		implicitWidth: filterConstructor.blockDim
+		implicitHeight: acceptsDrops ? opRoot.initialHeight / 3 : 0
 
 		acceptsDrops: parent.acceptsDrops
-		droppedShouldBeNested: true
+		droppedShouldBeNested: false
 	}
+
+
 
 	Image
 	{
 		id: opImg
-		x: leftDrop.x + leftDrop.width + 2
+		y: leftDrop.y + leftDrop.height + 2
 
-		visible: operatorImageSource !== ""
+		visible: operatorImageSource !== "" && (operator !== "/" || !acceptsDrops)
 
 		source: operatorImageSource
 
 		height: filterConstructor.blockDim
 		width: height
-		anchors.verticalCenter: parent.verticalCenter
+		anchors.horizontalCenter: parent.horizontalCenter
 	}
 
 	Text
 	{
 		id: opText
-		anchors.top: parent.top
-		anchors.bottom: parent.bottom
-		//width: max(opRoot.initialWidth / 4
-		leftPadding: 2
-		rightPadding: 2
-		x: leftDrop.x + leftDrop.width
+
+		anchors.left: parent.left
+		anchors.right: parent.right
+
+		y: leftDrop.y + leftDrop.height + 2
+		height: operator === "/" ? 6 : filterConstructor.blockDim * 1.5
 
 		verticalAlignment: Text.AlignVCenter
 		horizontalAlignment: Text.AlignHCenter
 
-		text: opRoot.operator
+		text: operator === "/" ? "" : opRoot.operator
 		font.pixelSize: filterConstructor.fontPixelSize
 
 		visible: !opImg.visible
 
 		font.bold: true
+
+		Rectangle
+		{
+			visible: operator === "/"
+			color: "black"
+			height: 2
+
+			anchors.left: parent.left
+			anchors.right: parent.right
+			anchors.leftMargin: 2
+			anchors.rightMargin: 2
+
+			anchors.verticalCenter: parent.verticalCenter
+		}
 	}
 
 
@@ -130,32 +129,16 @@ Item
 	DropSpot {
 		dropKeys: !(opRoot.dropKeysMirrorEachother && leftDrop.containsItem !== null) ? opRoot.dropKeysRight : leftDrop.containsItem.dragKeys
 
-		anchors.verticalCenter: parent.verticalCenter
+		anchors.horizontalCenter: parent.horizontalCenter
 
 		id: rightDrop
 		height: acceptsDrops ? implicitHeight : 0
 		width: acceptsDrops ? implicitWidth : 0
-		implicitWidth: opRoot.initialWidth / 4
-		implicitHeight: filterConstructor.blockDim
-		x: opX + opWidth
+		implicitWidth: filterConstructor.blockDim
+		implicitHeight: acceptsDrops ? opRoot.initialHeight / 3 : 0
+		y: opY + opHeight
 
 		acceptsDrops: parent.acceptsDrops
-		droppedShouldBeNested: true
-	}
-
-	Text
-	{
-		id: haakjesRechts
-		anchors.top: parent.top
-		anchors.bottom: parent.bottom
-		width: opRoot.isNested ? opRoot.initialWidth / 8 : 0
-		x: rightDrop.x + rightDrop.width
-
-		verticalAlignment: Text.AlignVCenter
-		horizontalAlignment: Text.AlignHCenter
-
-		text: ")"
-		font.pixelSize: filterConstructor.fontPixelSize
-		visible: opRoot.isNested
+		droppedShouldBeNested: false
 	}
 }
