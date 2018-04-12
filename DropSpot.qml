@@ -17,9 +17,19 @@ DropArea {
 	property string defaultText: acceptsDrops ? "..." : shouldShowX ? "X" : ""
 	property bool droppedShouldBeNested: false
 	property bool shouldShowX: false
+	property bool iWasChecked: false
 
 	implicitWidth: dropText.contentWidth
 	implicitHeight: filterConstructor.blockDim
+
+	function checkCompletenessFormulas()
+	{
+		iWasChecked = true
+
+		if(containsItem !== null)
+			return containsItem.checkCompletenessFormulas()
+		return false
+	}
 
 	onEntered:
 	{
@@ -52,13 +62,14 @@ DropArea {
 			width = originalWidth
 	}
 
-	onDropped: containsItem = drop.drag.source
+	//onDropped: containsItem = drop.drag.source
 
 	property var containsItem: null
 
 	onContainsItemChanged: {
 		if(containsItem == null)
 			width = Qt.binding(function(){ return dropText.contentWidth })
+		iWasChecked = false
 	}
 
 	Item
@@ -111,6 +122,7 @@ DropArea {
 			id: dropTextInput
 
 			text: dropText.text
+			color: errorMarker.visible ? "white" : "black"
 			font.pixelSize: filterConstructor.fontPixelSize
 			anchors.top: parent.top
 
@@ -151,6 +163,17 @@ DropArea {
 
 				dragTarget.containsItem = obj
 			}
+		}
+
+		Rectangle
+		{
+			id: errorMarker
+			z: -2
+			visible: dragTarget.iWasChecked && dragTarget.containsItem === null
+			radius: width
+			anchors.fill: parent
+			color: "#BB0000"
+
 		}
 	}
 

@@ -10,10 +10,8 @@
         <file>NumberDrag.qml</file>
         <file>DragGeneric.qml</file>
         <file>OperatorDrag.qml</file>
-        <file>NumberOperatorList.qml</file>
         <file>Function.qml</file>
         <file>FunctionDrag.qml</file>
-        <file>NumberOperatorList_copy.qml</file>
         <file>ColumnsSelector.qml</file>
         <file>JASPColumn.qml</file>
         <file>ColumnDrag.qml</file>
@@ -46,8 +44,9 @@
         <file>OperatorVerticalDrag.qml</file>
         <file>icons/divide.png</file>
         <file>OperatorSelector.qml</file>
-        <file>backgrounds/jasp-wave-down-blue-120.svg</file>
-        <file>backgrounds/jasp-wave-up-green-120.svg</file>
+        <file>FilterConstructorButton.qml</file>
+        <file>backgrounds/jasp-wave-down-light-blue-120.svg</file>
+        <file>backgrounds/jasp-wave-up-light-green-120.svg</file>
     </qresource>
     <qresource prefix="/icons"/>
     <qresource prefix="/backgrounds"/>

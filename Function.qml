@@ -47,18 +47,9 @@ Item
 		return compounded
 	}
 
-	function returnEmptyRightMostDropSpot()
-	{
-		return dropRepeat.rightMostEmptyDropSpot()
-	}
-
-	function returnFilledRightMostDropSpot()
-	{
-		return dropRepeat.leftMostFilledDropSpot()
-	}
-
-
-
+	function returnEmptyRightMostDropSpot()		{ return dropRepeat.rightMostEmptyDropSpot() }
+	function returnFilledRightMostDropSpot()	{ return dropRepeat.leftMostFilledDropSpot() }
+	function checkCompletenessFormulas()		{ return dropRepeat.checkCompletenessFormulas() }
 
 	Item
 	{
@@ -227,6 +218,15 @@ Item
 						return prevDropSpot //its ok if it is null. we just cant find anything here
 				}
 				return dropSpot.containsItem !== null ? dropSpot : null
+			}
+
+			function checkCompletenessFormulas()
+			{
+				var allComplete = true
+				for(var i=0; i<funcRoot.parameterNames.length; i++)
+					if(!dropRepeat.itemAt(i).getDropSpot().checkCompletenessFormulas())
+						allComplete = false
+				return allComplete
 			}
 
 			function rebindSize()

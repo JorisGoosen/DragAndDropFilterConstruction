@@ -24,4 +24,5 @@ Item
 	function returnEmptyRightMostDropSpot()		{ return null }
 	function returnFilledRightMostDropSpot()	{ return null }
 	function returnR()							{ return "'" + text + "'"; }
+	function checkCompletenessFormulas()		{ return true }
 }

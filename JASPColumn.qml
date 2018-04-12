@@ -46,4 +46,5 @@ Item
 	function returnEmptyRightMostDropSpot()		{ return null }
 	function returnFilledRightMostDropSpot()	{ return null }
 	function returnR()							{ return columnName	}
+	function checkCompletenessFormulas()		{ return true }
 }

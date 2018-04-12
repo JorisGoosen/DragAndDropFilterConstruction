@@ -1,6 +1,5 @@
-import QtQuick.Controls 1.4
+import QtQuick.Controls 2.3
 import QtQuick 2.0
-import QtGraphicalEffects 1.0
 
 Item {
 
@@ -46,7 +45,7 @@ Item {
 
 			height: parent.height / 5
 
-			source: "qrc:/backgrounds/jasp-wave-down-blue-120.svg"
+			source: "qrc:/backgrounds/jasp-wave-down-light-blue-120.svg"
 		}
 
 		Image
@@ -59,7 +58,7 @@ Item {
 
 			height: parent.height / 5
 
-			source: "qrc:/backgrounds/jasp-wave-up-green-120.svg"
+			source: "qrc:/backgrounds/jasp-wave-up-light-green-120.svg"
 		}
 
 
@@ -128,13 +127,18 @@ Item {
 				id: scrollScriptColumn
 				anchors.fill: parent
 				anchors.margins: 4
+				clip: true
 
-				horizontalScrollBarPolicy: Qt.ScrollBarAsNeeded
-				verticalScrollBarPolicy: Qt.ScrollBarAsNeeded
+				//horizontalScrollBarPolicy: Qt.ScrollBarAsNeeded
+				//verticalScrollBarPolicy: Qt.ScrollBarAsNeeded
 
-				contentItem: Item {
-					width: Math.max(rectangularColumnContainer.width-30, scriptColumn.childrenRect.width)
-					height: Math.max(rectangularColumnContainer.height-30, scriptColumn.childrenRect.height)
+				contentWidth: scriptColumn.childrenRect.width
+				contentHeight: scriptColumn.childrenRect.height
+
+				Item {
+
+					//width: Math.max(rectangularColumnContainer.width-30, scriptColumn.childrenRect.width)
+					//height: Math.max(rectangularColumnContainer.height-30, scriptColumn.childrenRect.height)
 
 					Column
 					{
@@ -159,8 +163,8 @@ Item {
 
 				anchors.bottom: parent.bottom
 				anchors.right: parent.right
-				anchors.bottomMargin: scrollScriptColumn.__horizontalScrollBar.visible ? 20 : 0
-				anchors.rightMargin: scrollScriptColumn.__verticalScrollBar.visible ? 20 : 0
+				//anchors.bottomMargin: scrollScriptColumn.__horizontalScrollBar.visible ? 20 : 0
+				//anchors.rightMargin: scrollScriptColumn.__verticalScrollBar.visible ? 20 : 0
 
 				height: Math.min(110, scrollScriptColumn.height)
 			}
@@ -171,46 +175,82 @@ Item {
 		TextArea
 		{
 			id: hints
+			text: "try doubleclicking or dragging some stuff!\n"
 
-			text: "try doubleclicking or dragging some stuff!"
+			//backgroundVisible: false
+			background: Item{}
 
 			anchors.left: parent.left
 			anchors.right: parent.right
 			anchors.bottom: printR.top
 
-			height: 60
+			height: font.pixelSize + contentHeight
 
-			backgroundVisible: false
+			wrapMode: TextArea.WordWrap
+			horizontalAlignment: TextArea.AlignHCenter
 
 		}
 
-		Text
+		FilterConstructorButton
 		{
 			id: printR
 			text: "Print R"
 
-			MouseArea
-			{
-				anchors.fill: parent
-				onClicked:
-				{
-					var uit = ""
-					for (var i = 0; i < scriptColumn.children.length; ++i)
-						uit += scriptColumn.children[i].returnR() + "\n"
+			anchors.horizontalCenter: parent.horizontalCenter
+			anchors.bottom: applyFilter.top
 
-					hints.text = uit
-				}
+			onClickedFunction: function() {
+				var uit = ""
+				for (var i = 0; i < scriptColumn.children.length; ++i)
+					uit += scriptColumn.children[i].returnR() + "\n"
+
+				hints.text = uit
 			}
-
-			horizontalAlignment: Text.AlignHCenter
-			verticalAlignment: Text.AlignVCenter
-
-			anchors.left: parent.left
-			anchors.right: parent.right
-			anchors.bottom: parent.bottom
 		}
 
+		FilterConstructorButton
+		{
+			id: applyFilter
+			text: "Check & Apply Filter"
 
+			onClickedFunction: function()
+			{
+				var allCorrect = true
+				var allBoolean = true
+				var noFormulas = true
+
+				for (var i = 0; i < scriptColumn.children.length; ++i)
+				{
+					if(!scriptColumn.children[i].checkCompletenessFormulas())
+						allCorrect = false
+
+					if(scriptColumn.children[i].dragKeys.indexOf("boolean") < 0)
+						allBoolean = false
+
+					noFormulas = false
+				}
+
+				hints.text = ""
+
+				if(allCorrect && allBoolean && !noFormulas)
+					hints.text += "Your filter is fine!\n"
+
+				if(noFormulas)
+					hints.text += "There are no formulas to be checked or applied..\nClick or drag any of the visible operators, columns or functions around the view to add some.\n"
+
+
+				if(!allCorrect)
+					hints.text += "You did not fill in all the arguments yet, see the fields marked in red.\n"
+
+
+
+				if(!allBoolean)
+					hints.text += (!allCorrect ? "\n" : "" ) + "Not every formula returns a set of logicals and thus cannot be used in the filter, to remedy this try to place comparison-operators such as '=' or '<' and the like as the roots of each formula.\n"
+			}
+
+			anchors.horizontalCenter: parent.horizontalCenter
+			anchors.bottom: parent.bottom
+		}
 
 	}
 

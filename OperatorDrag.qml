@@ -26,7 +26,7 @@ DragGeneric {
 		operatorImageSource: parent.opImages[operator] !== null && parent.opImages[operator] !== undefined ? parent.opImages[operator] : ""
 
 		dropKeysLeft: acceptsEverything ? ["boolean", "string", "number"] : acceptsBoolean ? ["boolean"] : ["number"]
-		dropKeysRight: dropKeysLeft
+		dropKeysRight: acceptsEverything ? ["boolean", "string", "number"] : acceptsBoolean ? ["boolean"] : ["number"]
 		dropKeysMirrorEachother: acceptsEverything
 
 		x: parent.dragX

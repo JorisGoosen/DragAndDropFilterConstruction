@@ -57,6 +57,12 @@ Item
 		return null
 	}
 
+	function checkCompletenessFormulas()
+	{
+		var leftIsOk = leftDrop.checkCompletenessFormulas()
+		var rightIsOk = rightDrop.checkCompletenessFormulas()
+		return leftIsOk && rightIsOk
+	}
 
 	DropSpot {
 		dropKeys: !(opRoot.dropKeysMirrorEachother && rightDrop.containsItem !== null) ? opRoot.dropKeysLeft : rightDrop.containsItem.dragKeys

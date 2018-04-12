@@ -152,6 +152,7 @@ MouseArea {
 	function returnR()							{ return shownChild.returnR() }
 	function returnEmptyRightMostDropSpot()		{ return shownChild.returnEmptyRightMostDropSpot() }
 	function returnFilledRightMostDropSpot()	{ return shownChild.returnFilledRightMostDropSpot() }
+	function checkCompletenessFormulas()		{ return shownChild.checkCompletenessFormulas() }
 
 	function tryLeftApplication()
 	{
