@@ -4,7 +4,7 @@ import QtQuick 2.9
 Item
 {
 	id: opRoot
-	objectName: "Operator" //not really ?
+	objectName: "OperatorVertical"
 
 	property int initialHeight: filterConstructor.blockDim * 3
 	property string operator: "/"
@@ -17,12 +17,12 @@ Item
 	property var dropKeysLeft: dropKeys
 	property var dropKeysRight: dropKeys
 
-	height: opHeight + rightDrop.height + leftDrop.height
-	width: Math.max(leftDrop.width, rightDrop.width, opWidth)
+	height: opY + opHeight + rightDrop.height
+	width: opWidth
 
-	property real opWidth: opImg.visible ? opImg.width : opText.width
-	property real opHeight: opImg.visible ? opImg.height : opText.height
-	property real opY: opImg.visible ? opImg.y : opText.y
+	property real opWidth: opImg.visible ? opImg.width : opTextStripe.width
+	property real opHeight: opImg.visible ? opImg.height : opTextStripe.height
+	property real opY: opImg.visible ? opImg.y : opTextStripe.y
 
 	function shouldDrag(mouseX, mouseY)
 	{
@@ -64,9 +64,6 @@ Item
 
 		anchors.horizontalCenter: parent.horizontalCenter
 
-		height: acceptsDrops ? implicitHeight : 0
-		width: acceptsDrops ? implicitWidth : 0
-		implicitWidth: filterConstructor.blockDim
 		implicitHeight: acceptsDrops ? opRoot.initialHeight / 3 : 0
 
 		acceptsDrops: parent.acceptsDrops
@@ -89,38 +86,52 @@ Item
 		anchors.horizontalCenter: parent.horizontalCenter
 	}
 
-	Text
+	Item
 	{
-		id: opText
-
-		anchors.left: parent.left
-		anchors.right: parent.right
-
-		y: leftDrop.y + leftDrop.height + 2
-		height: operator === "/" ? 6 : filterConstructor.blockDim * 1.5
-
-		verticalAlignment: Text.AlignVCenter
-		horizontalAlignment: Text.AlignHCenter
-
-		text: operator === "/" ? "" : opRoot.operator
-		font.pixelSize: filterConstructor.fontPixelSize
+		id: opTextStripe
 
 		visible: !opImg.visible
 
-		font.bold: true
+		y: leftDrop.y + leftDrop.height + marginStripe
+
+		height: operator === "/" ? marginStripe * 2 + opStripe.height : opText.height
+		width: Math.max(leftDrop.width + marginStripe, rightDrop.width + marginStripe, opStripe.visible ? filterConstructor.blockDim : opText.contentWidth)
+		property real marginStripe: opStripe.visible ? 2 : 0
+
+		Text
+		{
+			id: opText
+
+			anchors.left: parent.left
+			anchors.right: parent.right
+
+			height: filterConstructor.blockDim * 1.5
+
+			verticalAlignment: Text.AlignVCenter
+			horizontalAlignment: Text.AlignHCenter
+
+			text: opRoot.operator
+			font.pixelSize: filterConstructor.fontPixelSize
+
+			visible: !opStripe.visible
+
+			font.bold: true
+		}
 
 		Rectangle
 		{
+			id: opStripe
 			visible: operator === "/"
 			color: "black"
 			height: 2
 
-			anchors.left: parent.left
-			anchors.right: parent.right
-			anchors.leftMargin: 2
-			anchors.rightMargin: 2
+			anchors.left:			parent.left
+			anchors.right:			parent.right
+			anchors.leftMargin:		parent.marginStripe
+			anchors.rightMargin:	parent.marginStripe
 
 			anchors.verticalCenter: parent.verticalCenter
+
 		}
 	}
 
@@ -132,9 +143,6 @@ Item
 		anchors.horizontalCenter: parent.horizontalCenter
 
 		id: rightDrop
-		height: acceptsDrops ? implicitHeight : 0
-		width: acceptsDrops ? implicitWidth : 0
-		implicitWidth: filterConstructor.blockDim
 		implicitHeight: acceptsDrops ? opRoot.initialHeight / 3 : 0
 		y: opY + opHeight
 

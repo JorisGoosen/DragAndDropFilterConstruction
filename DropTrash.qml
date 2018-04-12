@@ -28,6 +28,8 @@ DropArea {
 		width: (sizer / aspect) * parent.iconPadding
 
 		source: somethingHovers ? "icons/trashcan_open.svg" : "icons/trashcan.svg"
+
+		smooth: true
 	}
 
 	MouseArea

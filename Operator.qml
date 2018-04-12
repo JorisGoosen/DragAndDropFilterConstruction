@@ -7,7 +7,7 @@ Item
 	id: opRoot
 	objectName: "Operator"
 
-	property int initialWidth:  filterConstructor.blockDim * acceptsDrops ? 3 : 2
+	property int initialWidth:  filterConstructor.blockDim * acceptsDrops ? 4 : 2
 	property string operator: "+"
 	property string operatorImageSource: ""
 	property bool acceptsDrops: true
@@ -19,9 +19,9 @@ Item
 	property var dropKeysRight: dropKeys
 
 	height: Math.max(filterConstructor.blockDim, leftDrop.height, rightDrop.height)
-	width:(haakjesLinks.visible ? haakjesLinks.width : 0) + leftDrop.width + opWidth + rightDrop.width + (haakjesRechts.visible ? haakjesRechts.width : 0)
+	width: opX + opWidth + rightDrop.width + (haakjesRechts.visible ? haakjesRechts.width : 0) //(haakjesLinks.visible ? haakjesLinks.width : 0) + leftDrop.width + opWidth + rightDrop.width + (haakjesRechts.visible ? haakjesRechts.width : 0)
 
-	property real opWidth: opImg.visible ? opImg.width : opText.width
+	property real opWidth: opImg.visible ? opImg.width + 2 : opText.width
 	property real opX: opImg.visible ? opImg.x : opText.x
 
 	function shouldDrag(mouseX, mouseY)
@@ -62,12 +62,12 @@ Item
 		id: haakjesLinks
 		anchors.top: parent.top
 		anchors.bottom: parent.bottom
-		width: opRoot.isNested ? opRoot.initialWidth / 8 : 0
+		//width: contentWidth
 
 		verticalAlignment: Text.AlignVCenter
 		horizontalAlignment: Text.AlignHCenter
 
-		text: "("
+		text: opRoot.isNested ? "(" : ""
 		font.pixelSize: filterConstructor.fontPixelSize
 
 		visible: opRoot.isNested
@@ -81,10 +81,10 @@ Item
 		anchors.verticalCenter: parent.verticalCenter
 
 
-		width: acceptsDrops ? implicitWidth : 0
-		height: acceptsDrops ? implicitHeight : 0
-		implicitWidth: opRoot.initialWidth / 4
-		implicitHeight: filterConstructor.blockDim
+		//width: acceptsDrops ? implicitWidth : 0
+		//height: implicitHeight
+		//implicitWidth: opRoot.initialWidth / 4
+		//implicitHeight: filterConstructor.blockDim
 
 		acceptsDrops: parent.acceptsDrops
 		droppedShouldBeNested: true
@@ -133,10 +133,10 @@ Item
 		anchors.verticalCenter: parent.verticalCenter
 
 		id: rightDrop
-		height: acceptsDrops ? implicitHeight : 0
-		width: acceptsDrops ? implicitWidth : 0
-		implicitWidth: opRoot.initialWidth / 4
-		implicitHeight: filterConstructor.blockDim
+		//height: implicitHeight
+		//width: acceptsDrops ? implicitWidth : 0
+		//implicitWidth: opRoot.initialWidth / 4
+		//implicitHeight: filterConstructor.blockDim
 		x: opX + opWidth
 
 		acceptsDrops: parent.acceptsDrops
@@ -148,13 +148,14 @@ Item
 		id: haakjesRechts
 		anchors.top: parent.top
 		anchors.bottom: parent.bottom
-		width: opRoot.isNested ? opRoot.initialWidth / 8 : 0
+		//width: opRoot.isNested ? opRoot.initialWidth / 8 : 0
 		x: rightDrop.x + rightDrop.width
 
 		verticalAlignment: Text.AlignVCenter
 		horizontalAlignment: Text.AlignHCenter
 
-		text: ")"
+		//text: ")"
+		text: opRoot.isNested ? ")" : ""
 		font.pixelSize: filterConstructor.fontPixelSize
 		visible: opRoot.isNested
 	}

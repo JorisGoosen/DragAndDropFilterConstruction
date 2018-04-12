@@ -6,7 +6,8 @@ Item
 	property string columnName: "?"
 	property string columnIcon: ""
 
-	height:	filterConstructor.blockDim
+	property real colScaler: 1
+	height:	filterConstructor.blockDim * colScaler
 	width:	colIcon.width + colName.width
 	property bool isNumerical: columnIcon.indexOf("nominal-text") < 0
 		//columnIcon.indexOf("scale") >= 0 || columnIcon.indexOf("ordinal") >= 0
@@ -34,27 +35,15 @@ Item
 		anchors.bottom: parent.bottom
 		width: contentWidth + 10
 
-		font.pixelSize: filterConstructor.fontPixelSize
+		font.pixelSize: filterConstructor.fontPixelSize * colScaler
 
 		leftPadding: 2
 
 		text: columnName
 	}
 
-	function shouldDrag(mouseX, mouseY)
-	{
-		return true;
-	}
-
-	function returnEmptyRightMostDropSpot()
-	{
-		return null
-	}
-
-	function returnFilledRightMostDropSpot()
-	{
-		return null
-	}
-
-	function returnR() { return columnName; }
+	function shouldDrag(mouseX, mouseY)			{ return true }
+	function returnEmptyRightMostDropSpot()		{ return null }
+	function returnFilledRightMostDropSpot()	{ return null }
+	function returnR()							{ return columnName	}
 }

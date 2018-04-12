@@ -54,7 +54,7 @@ MouseArea {
 	{
 		if(alternativeDropFunction !== null)
 		{
-			var obj = alternativeDropFunction(dragMe.Drag.target)
+			var obj = alternativeDropFunction(this)
 			if(obj !== null)
 				obj.releaseHere(dragMe.Drag.target)
 		}

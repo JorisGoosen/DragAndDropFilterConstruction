@@ -269,7 +269,7 @@ Item
 					keys: funcRoot.parameterDropKeys[index]
 
 					droppedShouldBeNested: funcRoot.parameterNames.length === 1 && functionName !== "abs" && functionName !== "mean"
-					shouldShowX: true
+					shouldShowX: funcRoot.parameterNames <= 1
 				}
 
 				Text

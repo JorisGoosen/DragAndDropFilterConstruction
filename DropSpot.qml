@@ -1,21 +1,25 @@
 import QtQuick 2.0
 
-//! [0]
 DropArea {
+	//Rectangle { color: "transparent"; border.color: "blue"; border.width: 1; anchors.fill: parent } //debug for size of the dropspots
+
 	id: dragTarget
 	objectName: "DropSpot"
 
 	property var dropKeys: [ "number", "boolean", "string", "variable" ]
 	property alias dropProxy: dragTarget
 
-	width:  !acceptsDrops && !shouldShowX ? 0 : dropText.contentWidth
-	height: !acceptsDrops && !shouldShowX ? 0 : 64
+	width:  implicitWidth
+	height: implicitHeight
 	keys: dropKeys
 	property real originalWidth: defaultText.length * filterConstructor.blockDim * 0.4
 	property bool acceptsDrops: true
 	property string defaultText: acceptsDrops ? "..." : shouldShowX ? "X" : ""
 	property bool droppedShouldBeNested: false
 	property bool shouldShowX: false
+
+	implicitWidth: dropText.contentWidth
+	implicitHeight: filterConstructor.blockDim
 
 	onEntered:
 	{
@@ -62,6 +66,7 @@ DropArea {
 		id: dropText
 
 		property string text: dragTarget.defaultText
+		property real contentWidth: dropTextStatic.visible ? dropTextStatic.contentWidth : dropTextInput.contentWidth
 
 		anchors.top: parent.top
 		anchors.bottom: parent.bottom
@@ -154,4 +159,3 @@ DropArea {
 
 
 }
-//! [0]

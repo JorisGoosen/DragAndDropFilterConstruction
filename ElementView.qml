@@ -5,6 +5,8 @@ ListView {
 
 	//clip: true
 
+
+
 	delegate: MouseArea
 	{
 
@@ -13,7 +15,7 @@ ListView {
 
 		z: 5
 
-		property var alternativeDropFunctionDef: function(targetLoc)
+		property var alternativeDropFunctionDef: function(caller)
 		{
 			var obj = null
 
@@ -31,17 +33,18 @@ ListView {
 		{
 			id: elementLoader
 
-			property bool isOperator: type.indexOf("operator") >=0
+			property bool isColumn:				type === "column"
+			property bool isOperator:			type.indexOf("operator") >=0
 			property string listOperator:		isOperator			?	operator			: "???"
 			property string listFunction:		type === "function"	?	functionName		: "???"
 			property real	listNumber:			type === "number"	?	number				: -1
 			property string	listText:			type === "string"	?	text				: "???"
 			property real	listWidth:			parent.width
-			property string	listColName:		type === "column"	?	columnName			: "???"
-			property string	listColIcon:		type === "column"	?	columnIcon			: "???"
+			property string	listColName:		isColumn			?	columnName			: "???"
+			property string	listColIcon:		isColumn			?	columnIcon			: "???"
 
-
-			anchors.centerIn: parent
+			//anchors.centerIn: parent
+			x: isColumn ? 0 : (parent.width - width) / 2
 
 			sourceComponent: type === "operator" ?
 								 operatorComp :
@@ -58,6 +61,12 @@ ListView {
 													 type === "separator" ?
 														 separatorComp :
 														 defaultComp
+
+			onLoaded:
+			{
+				if(listOfStuff.orientation !== ListView.Horizontal && listOfStuff.width < width)
+					listOfStuff.width = width
+			}
 		}
 
 		onDoubleClicked: alternativeDropFunctionDef()
@@ -69,11 +78,9 @@ ListView {
 		Component { id: stringComp;			StringDrag				{ text: listText;										alternativeDropFunction: alternativeDropFunctionDef } }
 		Component { id: separatorComp;		Item					{ height: filterConstructor.blockDim; width: listWidth; Rectangle { height: 1; color: "black"; width: listWidth ; anchors.centerIn: parent }  } }
 		Component { id: defaultComp;		Text					{ text: "Something wrong!"; color: "red" }  }
-		Component {	id: columnComp;			ColumnDrag				{ columnName: listColName; columnIcon: listColIcon }	}
+		Component {	id: columnComp;			ColumnDrag				{ columnName: listColName; columnIcon: listColIcon;		alternativeDropFunction: alternativeDropFunctionDef; colScaler: 0.8 } }
 
 
 
 	}
-
-
 }

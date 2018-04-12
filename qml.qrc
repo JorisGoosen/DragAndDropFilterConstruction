@@ -45,6 +45,10 @@
         <file>OperatorVertical.qml</file>
         <file>OperatorVerticalDrag.qml</file>
         <file>icons/divide.png</file>
+        <file>OperatorSelector.qml</file>
+        <file>backgrounds/jasp-wave-down-blue-120.svg</file>
+        <file>backgrounds/jasp-wave-up-green-120.svg</file>
     </qresource>
     <qresource prefix="/icons"/>
+    <qresource prefix="/backgrounds"/>
 </RCC>
