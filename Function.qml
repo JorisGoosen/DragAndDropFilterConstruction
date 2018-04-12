@@ -50,6 +50,7 @@ Item
 	function returnEmptyRightMostDropSpot()		{ return dropRepeat.rightMostEmptyDropSpot() }
 	function returnFilledRightMostDropSpot()	{ return dropRepeat.leftMostFilledDropSpot() }
 	function checkCompletenessFormulas()		{ return dropRepeat.checkCompletenessFormulas() }
+	function convertToJSON()					{ return dropRepeat.convertToJSON()	}
 
 	Item
 	{
@@ -227,6 +228,19 @@ Item
 					if(!dropRepeat.itemAt(i).getDropSpot().checkCompletenessFormulas())
 						allComplete = false
 				return allComplete
+			}
+
+			function convertToJSON()
+			{
+				var jsonObj = { "nodeType":"Function", "arguments":[] }
+
+				for(var i=0; i<funcRoot.parameterNames.length; i++)
+				{
+					var dropSpot = dropRepeat.itemAt(i).getDropSpot()
+					var argJson = dropSpot.containsItem === null ? null : dropSpot.containsItem.convertToJSON()
+					jsonObj.arguments.push({ "name": funcRoot.parameterNames[i], "dropKeys": funcRoot.parameterDropKeys[i], "argument": argJson})
+				}
+				return jsonObj
 			}
 
 			function rebindSize()

@@ -64,6 +64,16 @@ Item
 		return leftIsOk && rightIsOk
 	}
 
+	function convertToJSON()
+	{
+		var jsonObj = {
+			"nodeType":"Operator",
+			"leftArgument": (leftDrop.containsItem === null ? null : leftDrop.containsItem.convertToJSON()),
+			"rightArgument": (rightDrop.containsItem === null ? null : rightDrop.containsItem.convertToJSON())
+		}
+		return jsonObj
+	}
+
 	Text
 	{
 		id: haakjesLinks

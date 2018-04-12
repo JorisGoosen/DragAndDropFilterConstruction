@@ -64,6 +64,16 @@ Item
 		return leftIsOk && rightIsOk
 	}
 
+	function convertToJSON()
+	{
+		var jsonObj = {
+			"nodeType":"OperatorVertical",
+			"leftArgument": (leftDrop.containsItem === null ? null : leftDrop.containsItem.convertToJSON()),
+			"rightArgument": (rightDrop.containsItem === null ? null : rightDrop.containsItem.convertToJSON())
+		}
+		return jsonObj
+	}
+
 	DropSpot {
 		dropKeys: !(opRoot.dropKeysMirrorEachother && rightDrop.containsItem !== null) ? opRoot.dropKeysLeft : rightDrop.containsItem.dragKeys
 		id: leftDrop

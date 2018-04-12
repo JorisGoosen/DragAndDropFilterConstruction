@@ -25,4 +25,9 @@ Item
 	function returnFilledRightMostDropSpot()	{ return null }
 	function returnR()							{ return "'" + text + "'"; }
 	function checkCompletenessFormulas()		{ return true }
+	function convertToJSON()
+	{
+		var jsonObj = { "nodeType":"String", "text":text }
+		return jsonObj
+	}
 }

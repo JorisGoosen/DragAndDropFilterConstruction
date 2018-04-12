@@ -146,6 +146,24 @@ Item {
 						id: scriptColumn
 
 						anchors.fill: parent
+
+						function convertToR()
+						{
+							var uit = ""
+							for (var i = 0; i < children.length; ++i)
+								uit += ( i > 0 ? "&& ": "") + children[i].returnR() + "\n"
+
+							return uit
+						}
+
+						function convertToJSON()
+						{
+							var jsonObj = { "formulas": [] }
+							for (var i = 0; i < children.length; ++i)
+								jsonObj.formulas.push(children[i].convertToJSON())
+
+							return jsonObj
+						}
 					}
 
 					MouseArea
@@ -197,15 +215,21 @@ Item {
 			text: "Print R"
 
 			anchors.horizontalCenter: parent.horizontalCenter
+			anchors.bottom: printJSON.top
+
+			onClickedFunction: function() { hints.text = scriptColumn.convertToR() }
+
+		}
+
+		FilterConstructorButton
+		{
+			id: printJSON
+			text: "Print JSON"
+
+			anchors.horizontalCenter: parent.horizontalCenter
 			anchors.bottom: applyFilter.top
 
-			onClickedFunction: function() {
-				var uit = ""
-				for (var i = 0; i < scriptColumn.children.length; ++i)
-					uit += scriptColumn.children[i].returnR() + "\n"
-
-				hints.text = uit
-			}
+			onClickedFunction: function() { hints.text = JSON.stringify(scriptColumn.convertToJSON()) }
 		}
 
 		FilterConstructorButton

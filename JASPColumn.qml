@@ -47,4 +47,9 @@ Item
 	function returnFilledRightMostDropSpot()	{ return null }
 	function returnR()							{ return columnName	}
 	function checkCompletenessFormulas()		{ return true }
+	function convertToJSON()
+	{
+		var jsonObj = { "nodeType":"Column", "columnName":columnName, "columnIcon":columnIcon }
+		return jsonObj
+	}
 }
