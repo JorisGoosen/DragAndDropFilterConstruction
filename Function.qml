@@ -13,7 +13,7 @@ Item
 	property var parameterNames: ['a', 'b']
 	property var parameterDropKeys: [["number"], ["string"]]
 
-	property variant functionNameToImageSource: { "sum": "icons/sum.png", "sd": "icons/sigma.png", "var": "icons/variance.png", "!": "icons/negative.png"}
+    property variant functionNameToImageSource: { "sum": "icons/sum.png", "sd": "icons/sigma.png", "var": "icons/variance.png", "!": "icons/negative.png", "sqrt":"icons/rootHead.png"}
 	property string functionImageSource: functionNameToImageSource[functionName] !== undefined ? functionNameToImageSource[functionName] : ""
 	property bool isNested: false
 	property var booleanReturningFunctions: ["!"]
@@ -25,7 +25,9 @@ Item
 	property real extraMeanWidth: (functionName === "mean" ? 10 : 0)
 
 	readonly property bool showParentheses: functionName !== "mean" && (parameterNames.length > 1 || functionName === "abs")
-
+    readonly property bool isRoot: functionName === "sqrt"
+    readonly property bool isMean: functionName === "mean"
+    readonly property bool isAbs:  functionName === "abs"
 
 	function shouldDrag(mouseX, mouseY)
 	{
@@ -55,10 +57,10 @@ Item
 	Item
 	{
 		id: meanBar
-		visible: functionName === "mean"
-		height: visible ? 6 : 0
+        visible: funcRoot.isMean || funcRoot.isRoot
+        height: visible ? 6 : 0
 
-		anchors.left: parent.left
+        anchors.left: funcRoot.isRoot ? functionDef.right : parent.left
 		anchors.right: parent.right
 		anchors.top: parent.top
 
@@ -70,20 +72,20 @@ Item
 			anchors.left: parent.left
 			anchors.right: parent.right
 			anchors.top: parent.top
-			anchors.topMargin: 2
+            anchors.topMargin: funcRoot.isRoot ? 0 : 3
 
-			height: 2
+            height: 3
 		}
 	}
 
 	Item
 	{
 		id: functionDef
-		anchors.top: meanBar.top
+        anchors.top: funcRoot.isRoot ? parent.top : meanBar.bottom
 		anchors.bottom: parent.bottom
 
 		x: extraMeanWidth / 2
-		width: functionText.visible ? functionText.width : functionImg.width
+        width: functionImgRoot.visible ? functionImgRoot.width : functionText.visible ? functionText.width : functionImg.width
 
 		Text
 		{
@@ -95,25 +97,38 @@ Item
 			verticalAlignment: Text.AlignVCenter
 			horizontalAlignment: Text.AlignHCenter
 
-			text: functionName === "mean" || functionName === "abs" ? "" : functionName
+            text: funcRoot.isMean || funcRoot.isAbs || funcRoot.isRoot ? "" : functionName
 			font.pixelSize: filterConstructor.fontPixelSize
 
 			visible: !functionImg.visible
 		}
 
 
-		Image
-		{
-			id: functionImg
+        Image
+        {
+            id: functionImg
 
-			visible: functionImageSource !== ""
+            visible: (!funcRoot.isRoot || !funcRoot.acceptsDrops) && functionImageSource !== ""
 
-			source: functionImageSource
+            source: functionImageSource
 
-			height: filterConstructor.blockDim
-			width: height
-			anchors.verticalCenter: parent.verticalCenter
-		}
+            height: filterConstructor.blockDim
+            width: height
+
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Image
+        {
+            id: functionImgRoot
+
+            visible: funcRoot.isRoot &&  funcRoot.acceptsDrops
+
+            source: functionImageSource
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            width: filterConstructor.blockDim
+        }
 	}
 
 	Text
@@ -128,7 +143,7 @@ Item
 		horizontalAlignment: Text.AlignHCenter
 
 		width: showParentheses ? filterConstructor.blockDim / 3 : 0
-		text: ! showParentheses || functionName === "abs" ? "" : "("
+        text: ! showParentheses || funcRoot.isAbs || funcRoot.isRoot ? "" : "("
 		font.pixelSize: filterConstructor.fontPixelSize
 
 		Rectangle
@@ -141,10 +156,11 @@ Item
 			color: "black"
 			width: 2
 
-			visible: functionName === "abs"
+            visible: funcRoot.isAbs
 		}
 
 	}
+
 
 	Row
 	{
@@ -158,6 +174,8 @@ Item
 		height: dropRepeat.rowHeightCalc()
 
 		property real implicitWidthDrops: parent.acceptsDrops ? funcRoot.initialWidth / 4 : 0
+
+
 
 		Repeater
 		{
@@ -312,7 +330,7 @@ Item
 		horizontalAlignment: Text.AlignHCenter
 
 		width: showParentheses ? filterConstructor.blockDim / 3 : 0
-		text: ! showParentheses || functionName === "abs" ? "" : ")"
+        text: !showParentheses || funcRoot.isAbs || funcRoot.isRoot ? "" : ")"
 		font.pixelSize: filterConstructor.fontPixelSize
 
 		Rectangle
@@ -325,7 +343,7 @@ Item
 			color: "black"
 			width: 2
 
-			visible: functionName === "abs"
+            visible: funcRoot.isAbs
 		}
 	}
 }
