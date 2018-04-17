@@ -48,6 +48,8 @@
         <file>backgrounds/jasp-wave-down-light-blue-120.svg</file>
         <file>backgrounds/jasp-wave-up-light-green-120.svg</file>
         <file>JSONtoFormulas.qml</file>
+        <file>icons/rootHead.png</file>
+        <file>icons/rootTail.png</file>
     </qresource>
     <qresource prefix="/icons"/>
     <qresource prefix="/backgrounds"/>

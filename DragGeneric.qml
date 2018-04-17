@@ -66,17 +66,16 @@ MouseArea {
 	{
 		if(oldParent === null && dropTarget === null) //just created and not dropped anywhere specific!
 		{
-			var newDropTarget = this.determineReasonableInsertionSpot() //So lets try to find a better place, make it as userfriendly as possible
+
+            var newDropTarget = this.determineReasonableInsertionSpot() //So lets try to find a better place, make it as userfriendly as possible
 			if(newDropTarget !== null)
 			{
 				this.releaseHere(newDropTarget)
 				return
 			}
-			else if(leftDropSpot !== null) //maybe gobble something up instead of the other way 'round?
-			{
-				this.tryLeftApplication()
-				return
-			}
+
+            if(leftDropSpot !== null && this.tryLeftApplication()) //maybe gobble something up instead of the other way 'round?
+               return
 		}
 
 		if(dropTarget !== null && dropTarget.objectName === "DropSpot")
@@ -159,7 +158,7 @@ MouseArea {
 	{
 		this.releaseHere(scriptColumn)
 
-		if(leftDropSpot === null || leftDropSpot.containsItem !== null || scriptColumn.data.length === 1) return
+        if(leftDropSpot === null || leftDropSpot.containsItem !== null || scriptColumn.data.length === 1) return false
 
 		for(var i=scriptColumn.data.length - 1; i>=0; i--)
 			if(scriptColumn.data[i] !== this)
@@ -177,7 +176,7 @@ MouseArea {
 							if(putResultHere !== scriptColumn) //we went deeper
 								releaseHere(putResultHere)
 
-							return
+                            return true
 						}
 
 					//Ok, we couldnt actually take the entire node into ourselves. Maybe only the right part?
@@ -188,7 +187,7 @@ MouseArea {
 					gobbleMeUp		= putResultHere.containsItem
 				}
 
-				return
+                return false
 			}
 	}
 
