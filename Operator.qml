@@ -68,6 +68,7 @@ Item
 	{
 		var jsonObj = {
 			"nodeType":"Operator",
+			"operator": operator,
 			"leftArgument": (leftDrop.containsItem === null ? null : leftDrop.containsItem.convertToJSON()),
 			"rightArgument": (rightDrop.containsItem === null ? null : rightDrop.containsItem.convertToJSON())
 		}

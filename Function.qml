@@ -232,7 +232,7 @@ Item
 
 			function convertToJSON()
 			{
-				var jsonObj = { "nodeType":"Function", "arguments":[] }
+				var jsonObj = { "nodeType":"Function", "functionName": functionName, "arguments":[] }
 
 				for(var i=0; i<funcRoot.parameterNames.length; i++)
 				{

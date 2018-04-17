@@ -227,9 +227,23 @@ Item {
 			text: "Print JSON"
 
 			anchors.horizontalCenter: parent.horizontalCenter
-			anchors.bottom: applyFilter.top
+			anchors.bottom: convertJSON.top
 
 			onClickedFunction: function() { hints.text = JSON.stringify(scriptColumn.convertToJSON()) }
+		}
+
+		FilterConstructorButton
+		{
+			id: convertJSON
+			text: "Convert JSON"
+
+			anchors.horizontalCenter: parent.horizontalCenter
+			anchors.bottom: applyFilter.top
+
+			onClickedFunction: function()
+			{
+				jsonConverter.convertJSONtoFormulas(JSON.parse(hints.text))
+			}
 		}
 
 		FilterConstructorButton
@@ -308,4 +322,10 @@ Item {
 			anchors.fill: parent
 		}
 	}
+
+	JSONtoFormulas
+	{
+		id: jsonConverter
+	}
+
 }

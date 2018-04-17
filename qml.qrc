@@ -47,6 +47,7 @@
         <file>FilterConstructorButton.qml</file>
         <file>backgrounds/jasp-wave-down-light-blue-120.svg</file>
         <file>backgrounds/jasp-wave-up-light-green-120.svg</file>
+        <file>JSONtoFormulas.qml</file>
     </qresource>
     <qresource prefix="/icons"/>
     <qresource prefix="/backgrounds"/>
