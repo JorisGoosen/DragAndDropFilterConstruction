@@ -10,8 +10,8 @@ Item
 	property string functionName: "sum"
 	property bool acceptsDrops: true
 
-	property var parameterNames: ['a', 'b']
-	property var parameterDropKeys: [["number"], ["string"]]
+	property var parameterNames: []
+	property var parameterDropKeys: [[]]
 
     property variant functionNameToImageSource: { "sum": "icons/sum.png", "sd": "icons/sigma.png", "var": "icons/variance.png", "!": "icons/negative.png", "sqrt":"icons/rootHead.png"}
 	property string functionImageSource: functionNameToImageSource[functionName] !== undefined ? functionNameToImageSource[functionName] : ""
@@ -24,7 +24,7 @@ Item
 	width: functionDef.width + haakjesLinks.width + dropRow.width + haakjesRechts.width + extraMeanWidth
 	property real extraMeanWidth: (functionName === "mean" ? 10 : 0)
 
-	readonly property bool showParentheses: functionName !== "mean" && (parameterNames.length > 1 || functionName === "abs")
+	readonly property bool showParentheses: functionName !== "mean" && (parameterNames.length > 1 || functionName === "abs" || functionImageSource === "")
     readonly property bool isRoot: functionName === "sqrt"
     readonly property bool isMean: functionName === "mean"
     readonly property bool isAbs:  functionName === "abs"

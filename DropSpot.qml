@@ -14,7 +14,7 @@ DropArea {
 	keys: dropKeys
 	property real originalWidth: defaultText.length * filterConstructor.blockDim * 0.4
 	property bool acceptsDrops: true
-	property string defaultText: acceptsDrops ? "..." : shouldShowX ? "X" : ""
+	property string defaultText: acceptsDrops ? "..." : shouldShowX ? "x" : ""
 	property bool droppedShouldBeNested: false
 	property bool shouldShowX: false
 	property bool iWasChecked: false

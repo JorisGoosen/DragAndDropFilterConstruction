@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QtQuick.Controls 2.2
 
 //! [0]
 DropArea {
@@ -16,6 +17,7 @@ DropArea {
 
 	onEntered: somethingHovers = true
 	onExited: somethingHovers = false
+
 
 	Image
 	{
@@ -37,6 +39,14 @@ DropArea {
 		anchors.fill: parent
 
 		onDoubleClicked: parent.destroyAll()
+
+		ToolTip.delay: 500
+		//ToolTip.timeout: 1000
+		ToolTip.visible: containsMouse
+		ToolTip.text: "Dump unwanted formula snippets here; doubleclick to clean up the entire slate"
+
+		hoverEnabled: true
+
 	}
 
 	function destroyAll()

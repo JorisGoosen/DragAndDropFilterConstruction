@@ -9,26 +9,27 @@ Item
 
 	Row
 	{
-
+		id: operatorRow
 		x: parent.horizontalCenterX - (width / 2)
 
-		OperatorDrag			{ operator: "+";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef }
-		OperatorDrag			{ operator: "-";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef }
-		OperatorDrag			{ operator: "*";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef }
-		OperatorVerticalDrag	{ operator: "/";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef }
-		OperatorDrag			{ operator: "/";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef }
-		OperatorDrag			{ operator: "^";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef }
-        FunctionDrag			{ functionName: "sqrt";	acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef; parameterNames: []; parameterDropKeys: [] }
-		OperatorDrag			{ operator: "%";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef }
-		OperatorDrag			{ operator: "==";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef }
-		OperatorDrag			{ operator: "!=";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef }
-		OperatorDrag			{ operator: "<";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef }
-		OperatorDrag			{ operator: "<=";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef }
-		OperatorDrag			{ operator: ">";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef }
-		OperatorDrag			{ operator: ">=";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef }
-		OperatorDrag			{ operator: "&";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef }
-		OperatorDrag			{ operator: "|";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef }
-        FunctionDrag			{ functionName: "!";	acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef; parameterNames: []; parameterDropKeys: [] }
+		OperatorDrag			{ operator: "+";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef; toolTipText: "addition" }
+		OperatorDrag			{ operator: "-";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef; toolTipText: "subtraction" }
+		OperatorDrag			{ operator: "*";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef; toolTipText: "multiplication" }
+		OperatorVerticalDrag	{ operator: "/";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef; toolTipText: "division" }
+		OperatorDrag			{ operator: "/";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef; toolTipText: "division" }
+		OperatorDrag			{ operator: "^";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef; toolTipText: "power, 2^3 returns 8" }
+		FunctionDrag			{ functionName: "sqrt";	acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef; parameterNames: []; parameterDropKeys: []; toolTipText: "square root" }
+		OperatorDrag			{ operator: "%";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef; toolTipText: "modulo, returns the remainder of a division. 3%2 returns 1" }
+		property string logicalnessText: ", returns a logical and can be used as the root of a formula for filtering"
+		OperatorDrag			{ operator: "==";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef; toolTipText: "equality" + operatorRow.logicalnessText }
+		OperatorDrag			{ operator: "!=";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef; toolTipText: "difference" + operatorRow.logicalnessText }
+		OperatorDrag			{ operator: "<";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef; toolTipText: "smaller then" + operatorRow.logicalnessText }
+		OperatorDrag			{ operator: "<=";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef; toolTipText: "smaller then or equal to" + operatorRow.logicalnessText }
+		OperatorDrag			{ operator: ">";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef; toolTipText: "greater then" + operatorRow.logicalnessText }
+		OperatorDrag			{ operator: ">=";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef; toolTipText: "greater then or equal to" + operatorRow.logicalnessText }
+		OperatorDrag			{ operator: "&";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef; toolTipText: "and" + operatorRow.logicalnessText }
+		OperatorDrag			{ operator: "|";		acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef; toolTipText: "or" + operatorRow.logicalnessText }
+		FunctionDrag			{ functionName: "!";	acceptsDrops: false;	alternativeDropFunction: alternativeDropFunctionDef; parameterNames: []; parameterDropKeys: []; toolTipText: "not" + operatorRow.logicalnessText }
 
 	}
 
@@ -41,9 +42,9 @@ Item
 	{
 		var obj = null
 
-		if(caller.shownChild.objectName === "Operator")					obj = operatorComp.createObject(scriptColumn,		{ "alternativeDropFunction": null, "operator": caller.operator,			"acceptsDrops": true})
-		else if(caller.shownChild.objectName === "OperatorVertical")	obj = operatorvertComp.createObject(scriptColumn,	{ "alternativeDropFunction": null, "operator": caller.operator,			"acceptsDrops": true})
-        else if(caller.shownChild.objectName === "Function")			obj = functionComp.createObject(scriptColumn,		{ "alternativeDropFunction": null, "functionName": caller.functionName,	"acceptsDrops": true,  "parameterNames": caller.function === "!" ? ["logical(s)"] : ["value(s)"], parameterDropKeys: caller.function === "!" ? ["boolean"] : ["number"] })
+		if(caller.shownChild.objectName === "Operator")					obj = operatorComp.createObject(scriptColumn,		{ "toolTipText": caller.toolTipText, "alternativeDropFunction": null, "operator": caller.operator,			"acceptsDrops": true})
+		else if(caller.shownChild.objectName === "OperatorVertical")	obj = operatorvertComp.createObject(scriptColumn,	{ "toolTipText": caller.toolTipText, "alternativeDropFunction": null, "operator": caller.operator,			"acceptsDrops": true})
+		else if(caller.shownChild.objectName === "Function")			obj = functionComp.createObject(scriptColumn,		{ "toolTipText": caller.toolTipText, "alternativeDropFunction": null, "functionName": caller.functionName,	"acceptsDrops": true,  "parameterNames": caller.function === "!" ? ["logical(s)"] : ["value(s)"], parameterDropKeys: caller.function === "!" ? ["boolean"] : ["number"] })
 
 		return obj
 	}

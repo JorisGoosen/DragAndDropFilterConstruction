@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QtQuick.Controls 2.3
 
 
 MouseArea {
@@ -22,6 +23,7 @@ MouseArea {
 
 	Rectangle
 	{
+		id: formulaNonBoolean
 		color: "transparent"
 		border.color: "red"
 		border.width: 1
@@ -30,6 +32,14 @@ MouseArea {
 
 		visible: mouseArea.wasChecked && mouseArea.isFormula && !mouseArea.isABoolean
 	}
+
+	property string toolTipText: ""
+	property string shownToolTipText: formulaNonBoolean.visible ? "This formula should return logicals, try using '=', '>' or something similar." : toolTipText
+
+	ToolTip.delay: 500
+	//ToolTip.timeout: 1000
+	ToolTip.visible: shownToolTipText != "" && containsMouse
+	ToolTip.text: shownToolTipText
 
 
 
@@ -168,7 +178,7 @@ MouseArea {
 	function returnEmptyRightMostDropSpot()		{ return shownChild.returnEmptyRightMostDropSpot() }
 	function returnFilledRightMostDropSpot()	{ return shownChild.returnFilledRightMostDropSpot() }
 	function checkCompletenessFormulas()		{ wasChecked = true; return shownChild.checkCompletenessFormulas() }
-	function convertToJSON()					{ return shownChild.convertToJSON() }
+	function convertToJSON()					{ var obj = shownChild.convertToJSON(); obj.toolTipText = toolTipText; return obj }
 
 	function tryLeftApplication()
 	{

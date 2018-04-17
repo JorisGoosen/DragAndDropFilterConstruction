@@ -11,10 +11,11 @@ Item {
 	{
 		if(jsonObj === null || jsonObj === undefined) return
 
+		var toolTip = jsonObj.toolTipText
 
 		if(jsonObj.nodeType === "Operator" || jsonObj.nodeType === "OperatorVertical")
 		{
-			var operatorObj = (jsonObj.nodeType === "Operator" ? createOperator(jsonObj.operator) : createOperatorVertical(jsonObj.operator))
+			var operatorObj = (jsonObj.nodeType === "Operator" ? createOperator(jsonObj.operator, toolTip) : createOperatorVertical(jsonObj.operator, toolTip))
 			operatorObj.releaseHere(dropItHere)
 
 			convertJSONtoItem(jsonObj.leftArgument, operatorObj.leftDrop)
@@ -30,28 +31,27 @@ Item {
 				parameterDropKeys.push(jsonObj.arguments[i].dropKeys)
 			}
 
-			var funcObj = createFunction(jsonObj.functionName, parameterNames, parameterDropKeys)
+			var funcObj = createFunction(jsonObj.functionName, parameterNames, parameterDropKeys, toolTip)
 			funcObj.releaseHere(dropItHere)
 
 			for(var i=0; i<jsonObj.arguments.length; i++)
 				convertJSONtoItem(jsonObj.arguments[i].argument, funcObj.getParameterDropSpot(jsonObj.arguments[i].name))
 		}
 		else if(jsonObj.nodeType === "Number")
-				createNumber(jsonObj.value).releaseHere(dropItHere)
+				createNumber(jsonObj.value, toolTip).releaseHere(dropItHere)
 		else if(jsonObj.nodeType === "String")
-				createString(jsonObj.text).releaseHere(dropItHere)
+				createString(jsonObj.text, toolTip).releaseHere(dropItHere)
 		else if(jsonObj.nodeType === "Column")
-				createColumn(jsonObj.columnName, jsonObj.columnIcon).releaseHere(dropItHere)
+				createColumn(jsonObj.columnName, jsonObj.columnIcon, toolTip).releaseHere(dropItHere)
 	}
 
-	function createOperator(operator)						{ return operatorComp.createObject(scriptColumn,		{ "operator": operator } ) }
-	function createOperatorVertical(operator)				{ return operatorvertComp.createObject(scriptColumn,	{ "operator": operator } ) }
-	function createFunction(functionName,
-							parameterNames,
-							parameterDropKeys)				{ return functionComp.createObject(scriptColumn,		{ "functionName": functionName,	"parameterNames": parameterNames, "parameterDropKeys": parameterDropKeys } ) }
-	function createNumber(number)							{ return numberComp.createObject(scriptColumn,			{ "value": number } ) }
-	function createString(text)								{ return stringComp.createObject(scriptColumn,			{ "text": text } ) }
-	function createColumn(columnName, columnIcon)			{ return columnComp.createObject(scriptColumn,			{ "columnName": columnName,	"columnIcon": columnIcon } ) }
+	function createOperator(operator, toolTip)				{ return operatorComp.createObject(scriptColumn,		{ "toolTipText": toolTip, "operator": operator } ) }
+	function createOperatorVertical(operator, toolTip)		{ return operatorvertComp.createObject(scriptColumn,	{ "toolTipText": toolTip, "operator": operator } ) }
+	function createFunction(functionName, parameterNames,
+							parameterDropKeys, toolTip)		{ return functionComp.createObject(scriptColumn,		{ "toolTipText": toolTip, "functionName": functionName,	"parameterNames": parameterNames, "parameterDropKeys": parameterDropKeys } ) }
+	function createNumber(number, toolTip)					{ return numberComp.createObject(scriptColumn,			{ "toolTipText": toolTip, "value": number } ) }
+	function createString(text, toolTip)					{ return stringComp.createObject(scriptColumn,			{ "toolTipText": toolTip, "text": text } ) }
+	function createColumn(columnName, columnIcon, toolTip)	{ return columnComp.createObject(scriptColumn,			{ "toolTipText": toolTip, "columnName": columnName,	"columnIcon": columnIcon } ) }
 
 
 	Component { id: operatorComp;		OperatorDrag			{ } }
