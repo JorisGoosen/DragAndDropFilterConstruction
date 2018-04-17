@@ -16,6 +16,21 @@ MouseArea {
 
 	property var leftDropSpot: null //should only contain something for operators I guess?
 
+	readonly property bool isFormula: parent !== undefined && parent !== null && parent.objectName === "scriptColumn"
+	readonly property bool isABoolean: dragKeys.indexOf("boolean") >= 0
+	property bool wasChecked: false
+
+	Rectangle
+	{
+		color: "transparent"
+		border.color: "red"
+		border.width: 1
+
+		anchors.fill: parent
+
+		visible: mouseArea.wasChecked && mouseArea.isFormula && !mouseArea.isABoolean
+	}
+
 
 
 	objectName: "DragGeneric"
@@ -64,6 +79,7 @@ MouseArea {
 
 	function releaseHere(dropTarget)
 	{
+		wasChecked = false
 		if(oldParent === null && dropTarget === null) //just created and not dropped anywhere specific!
 		{
 
@@ -151,7 +167,7 @@ MouseArea {
 	function returnR()							{ return shownChild.returnR() }
 	function returnEmptyRightMostDropSpot()		{ return shownChild.returnEmptyRightMostDropSpot() }
 	function returnFilledRightMostDropSpot()	{ return shownChild.returnFilledRightMostDropSpot() }
-	function checkCompletenessFormulas()		{ return shownChild.checkCompletenessFormulas() }
+	function checkCompletenessFormulas()		{ wasChecked = true; return shownChild.checkCompletenessFormulas() }
 	function convertToJSON()					{ return shownChild.convertToJSON() }
 
 	function tryLeftApplication()

@@ -19,6 +19,9 @@ DragGeneric {
 
 	leftDropSpot:		showMe.leftDropSpot
 
+	property alias leftDrop: showMe.leftDrop
+	property alias rightDrop: showMe.rightDrop
+
 	OperatorVertical
 	{
 		id: showMe

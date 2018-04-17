@@ -129,21 +129,16 @@ Item {
 				anchors.margins: 4
 				clip: true
 
-				//horizontalScrollBarPolicy: Qt.ScrollBarAsNeeded
-				//verticalScrollBarPolicy: Qt.ScrollBarAsNeeded
-
 				contentWidth: scriptColumn.childrenRect.width
 				contentHeight: scriptColumn.childrenRect.height
 
 				Item {
 
-					//width: Math.max(rectangularColumnContainer.width-30, scriptColumn.childrenRect.width)
-					//height: Math.max(rectangularColumnContainer.height-30, scriptColumn.childrenRect.height)
-
 					Column
 					{
 						z: parent.z + 1
 						id: scriptColumn
+						objectName: "scriptColumn"
 
 						anchors.fill: parent
 

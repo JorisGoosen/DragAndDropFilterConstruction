@@ -24,6 +24,9 @@ Item
 	property real opHeight: opImg.visible ? opImg.height : opTextStripe.height
 	property real opY: opImg.visible ? opImg.y : opTextStripe.y
 
+	property alias leftDrop: leftDrop
+	property alias rightDrop: rightDrop
+
 	function shouldDrag(mouseX, mouseY)
 	{
 		if(!acceptsDrops)
@@ -69,7 +72,8 @@ Item
 		var jsonObj = {
 			"nodeType":"OperatorVertical",
 			"leftArgument": (leftDrop.containsItem === null ? null : leftDrop.containsItem.convertToJSON()),
-			"rightArgument": (rightDrop.containsItem === null ? null : rightDrop.containsItem.convertToJSON())
+			"rightArgument": (rightDrop.containsItem === null ? null : rightDrop.containsItem.convertToJSON()),
+			"operator": operator
 		}
 		return jsonObj
 	}

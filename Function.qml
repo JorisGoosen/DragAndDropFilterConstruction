@@ -54,6 +54,8 @@ Item
 	function checkCompletenessFormulas()		{ return dropRepeat.checkCompletenessFormulas() }
 	function convertToJSON()					{ return dropRepeat.convertToJSON()	}
 
+	function getParameterDropSpot(param)		{ return dropRepeat.getParameterDropSpot(param) }
+
 	Item
 	{
 		id: meanBar
@@ -259,6 +261,16 @@ Item
 					jsonObj.arguments.push({ "name": funcRoot.parameterNames[i], "dropKeys": funcRoot.parameterDropKeys[i], "argument": argJson})
 				}
 				return jsonObj
+			}
+
+			function getParameterDropSpot(param)
+			{
+				for(var i=0; i<funcRoot.parameterNames.length; i++)
+					if(funcRoot.parameterNames[i] === param)
+						return dropRepeat.itemAt(i).getDropSpot()
+
+				return null
+
 			}
 
 			function rebindSize()

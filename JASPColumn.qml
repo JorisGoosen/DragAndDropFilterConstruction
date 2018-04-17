@@ -6,7 +6,7 @@ Item
 	property string columnName: "?"
 	property string columnIcon: ""
 
-	property real colScaler: 1
+	property real colScaler: 0.8
 	height:	filterConstructor.blockDim * colScaler
 	width:	colIcon.width + colName.width
 	property bool isNumerical: columnIcon.indexOf("nominal-text") < 0

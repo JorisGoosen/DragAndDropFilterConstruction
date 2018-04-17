@@ -18,6 +18,9 @@ Item
 	property var dropKeysLeft: dropKeys
 	property var dropKeysRight: dropKeys
 
+	property alias leftDrop: leftDrop
+	property alias rightDrop: rightDrop
+
 	height: Math.max(filterConstructor.blockDim, leftDrop.height, rightDrop.height)
 	width: opX + opWidth + rightDrop.width + (haakjesRechts.visible ? haakjesRechts.width : 0) //(haakjesLinks.visible ? haakjesLinks.width : 0) + leftDrop.width + opWidth + rightDrop.width + (haakjesRechts.visible ? haakjesRechts.width : 0)
 

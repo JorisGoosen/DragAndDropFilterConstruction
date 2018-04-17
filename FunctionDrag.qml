@@ -10,6 +10,8 @@ DragGeneric {
 	property bool acceptsDrops: true
 	dragKeys: showMe.dragKeys
 
+	function getParameterDropSpot(param)		{ return showMe.getParameterDropSpot(param) }
+
 	Function
 	{
 		id: showMe

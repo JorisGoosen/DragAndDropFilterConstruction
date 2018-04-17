@@ -78,7 +78,7 @@ ListView {
 		Component { id: stringComp;			StringDrag				{ text: listText;										alternativeDropFunction: alternativeDropFunctionDef } }
 		Component { id: separatorComp;		Item					{ height: filterConstructor.blockDim; width: listWidth; Rectangle { height: 1; color: "black"; width: listWidth ; anchors.centerIn: parent }  } }
 		Component { id: defaultComp;		Text					{ text: "Something wrong!"; color: "red" }  }
-		Component {	id: columnComp;			ColumnDrag				{ columnName: listColName; columnIcon: listColIcon;		alternativeDropFunction: alternativeDropFunctionDef; colScaler: 0.8 } }
+		Component {	id: columnComp;			ColumnDrag				{ columnName: listColName; columnIcon: listColIcon;		alternativeDropFunction: alternativeDropFunctionDef } }
 
 
 
